@@ -156,6 +156,10 @@ button,.slot,.box{touch-action:manipulation}
 #lbox input:focus{border-color:#f0ae1c}
 #lbox .lt{display:flex;gap:6px}#lbox .lt button{flex:1;padding:9px;background:#e8dcb5;color:#6a5a30;box-shadow:none;font-size:14px}#lbox .lt button.on{background:linear-gradient(#ffd966,#f0ae1c);color:#4a2e08}
 #lbox .lrow{display:flex;gap:8px;align-items:center}#lbox .lrow>input{flex:1;min-width:0}#lbox .rm{display:flex;align-items:center;gap:5px;font-size:13px;font-weight:600;color:#3a2716;cursor:pointer;white-space:nowrap;user-select:none}#lbox .rm input{width:20px;height:20px;padding:0;flex:none;accent-color:#f0ae1c;cursor:pointer}
+#net{top:50px;left:50%;transform:translateX(-50%);background:#b00020;display:none;z-index:60;font-weight:600}
+body.photo .box,body.photo #joy,body.photo #xrow,body.photo #bar,body.photo #mm,body.photo #rl,body.photo #rr,body.photo #undo,body.photo #rot,body.photo #back{display:none!important}
+#phx{position:fixed;right:10px;bottom:10px;z-index:61;display:none;width:44px;height:44px;border-radius:50%;background:rgba(20,20,20,.55);color:#fff;font-size:20px;align-items:center;justify-content:center;cursor:pointer}
+body.photo #phx{display:flex}
 #lgo{padding:12px;font-size:17px}#lgo:disabled{opacity:.6}
 #lerr{min-height:18px;color:#b00020;font-size:13px;font-weight:500}
 #lg .lo{font-size:13px;color:#3a2716;opacity:.7}#lg .lr{display:flex;gap:8px;flex-wrap:wrap;justify-content:center}#lg .lr button{padding:9px 16px;font-size:14px}
@@ -271,7 +275,7 @@ const firebaseConfig = {
 const $=id=>document.getElementById(id);
 const panel=$('panel');let market={};
 const esc=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
-function pop(t){const e=document.createElement('div');e.className='pop';e.textContent=t;e.style.marginLeft=(Math.random()*80-40)+'px';document.body.appendChild(e);setTimeout(()=>e.remove(),1000)}
+function pop(t){try{navigator.vibrate&&navigator.vibrate(12)}catch(_){}const e=document.createElement('div');e.className='pop';e.textContent=t;e.style.marginLeft=(Math.random()*80-40)+'px';document.body.appendChild(e);setTimeout(()=>e.remove(),1000)}
 function toast(t){const e=$('toast');e.textContent=t;e.style.display='block';clearTimeout(toast.t);toast.t=setTimeout(()=>e.style.display='none',2000)}
 
 const app=initializeApp(firebaseConfig),auth=getAuth(app),db=getDatabase(app);
@@ -1066,7 +1070,17 @@ function xApply(){
   mk('sv','☁️',null,'Kayıt durumu');
   const xt=document.createElement('div');xt.id='xt';xt.className='box';document.body.appendChild(xt);
   const tp=document.createElement('div');tp.id='xtip';tp.className='box';document.body.appendChild(tp);
-  $('help').innerHTML+='<br>O: ayarlar · P: köy (proje, takas, lonca)';
+  $('help').innerHTML+='<br>O: ayarlar · P: köy (proje, takas, lonca) · H: fotoğraf modu';
+  // bağlantı uyarısı
+  const net=document.createElement('div');net.id='net';net.className='box';net.textContent='⚠️ Bağlantı koptu, değişiklikler kaydedilmiyor';document.body.appendChild(net);
+  {let was=false;onValue(ref(db,'.info/connected'),sn=>{if(sn.val()){was=true;net.style.display='none'}else if(was)net.style.display='block'})}
+  addEventListener('offline',()=>{net.style.display='block'});
+  // fotoğraf modu
+  const phx=document.createElement('div');phx.id='phx';phx.textContent='📷';phx.title='Arayüzü geri getir (H)';document.body.appendChild(phx);
+  const photo=on=>{document.body.classList.toggle('photo',on===undefined?!document.body.classList.contains('photo'):on);if(document.body.classList.contains('photo'))try{closeChat();closeMap();closeTools();panel.style.display='none'}catch(e){}};
+  phx.onclick=()=>photo(false);
+  mk('ph','📷 Foto',()=>photo(true),'Fotoğraf modu (H)');
+  addEventListener('keydown',e=>{if(e.target.tagName==='INPUT'||e.repeat||e.ctrlKey||e.metaKey)return;if(e.key==='h'||e.key==='H')photo();else if(e.key==='Escape')photo(false)});
 }
 function XOPEN(t){
   if(!t||(panel.style.display==='block'&&ptab===t&&!facOpen)){panel.style.display='none';return}
