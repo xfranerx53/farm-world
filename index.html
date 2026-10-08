@@ -84,7 +84,7 @@ button,.slot,.box{touch-action:manipulation}
 #copen{display:flex;align-items:center;gap:6px;font-weight:600;font-size:14px}
 #cbadge{display:none;background:#e0533a;color:#fff;border-radius:10px;padding:0 7px;font-style:normal;font-size:12px;line-height:18px}
 /* sohbet paneli + büyük harita */
-#cp,#bm{display:none;position:fixed;z-index:35;left:50%;transform:translateX(-50%);top:calc(env(safe-area-inset-top,0px) + 8px);width:min(520px,96vw);padding:10px 12px}
+#cp,#bm,#tp{display:none;position:fixed;z-index:35;left:50%;transform:translateX(-50%);top:calc(env(safe-area-inset-top,0px) + 8px);width:min(520px,96vw);padding:10px 12px}
 .ch{display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;font-size:17px}
 .cx{width:42px;height:42px;border-radius:50%;border:0;background:#e0533a;color:#fff;font-size:19px;box-shadow:0 3px 0 #8a2a18;cursor:pointer;flex:none;font-family:inherit}
 .cx:active{transform:translateY(2px);box-shadow:none}
@@ -133,6 +133,23 @@ button,.slot,.box{touch-action:manipulation}
 #panel .form input[type=range]{padding:0}
 #panel .pill{display:inline-block;padding:4px 10px;border-radius:14px;background:rgba(255,255,255,.1);margin:2px;font-size:12.5px}
 #panel .pill.on{background:rgba(124,207,85,.3)}
+/* ===== Alet paneli (E) ===== */
+#tp{overflow:auto;max-height:min(86dvh,720px);padding:0!important;-webkit-overflow-scrolling:touch}
+#tp .ph{position:sticky;top:0;z-index:3;display:flex;align-items:center;gap:10px;padding:10px 12px;background:#3a2716;border-radius:12px 12px 0 0;border-bottom:2px solid rgba(255,225,160,.18)}
+#tp .ph b{flex:1;font-size:19px}
+#tp .ph .cur{font-size:13px;opacity:.9;background:rgba(0,0,0,.3);border-radius:14px;padding:4px 10px;white-space:nowrap}
+#tp .tb{padding:4px 12px 14px}
+#tp h4{margin:12px 0 6px;font-size:14px;color:var(--gold);font-weight:600}
+#tp .g{display:grid;grid-template-columns:repeat(auto-fill,minmax(92px,1fr));gap:8px}
+#tp .c{position:relative;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;min-height:86px;padding:8px 4px;border-radius:12px;border:2px solid transparent;background:rgba(255,255,255,.08);cursor:pointer;text-align:center;font-size:13px;font-weight:500;line-height:1.15}
+#tp .c:hover{background:rgba(255,255,255,.15)}
+#tp .c .e{font-size:30px;line-height:1.1}
+#tp .c small{font-size:11px;opacity:.82;font-weight:400}
+#tp .c .n{position:absolute;top:3px;left:6px;font-size:10px;opacity:.55}
+#tp .c.on{border-color:var(--gold);background:rgba(255,207,74,.25)}
+#tp .c.lock{opacity:.5}
+#tp .c:active{transform:scale(.96)}
+.slot.menu{background:linear-gradient(#ffd966,#f0ae1c);color:#4a2e08;font-weight:600;min-width:74px!important}
 /* ===== telefon / dar ekran / dokunmatik ===== */
 @media (max-width:700px),(pointer:coarse){
  :root{--sa:env(safe-area-inset-top,0px);--sb:env(safe-area-inset-bottom,0px)}
@@ -148,7 +165,7 @@ button,.slot,.box{touch-action:manipulation}
  #mus{top:calc(var(--sa) + 88px)!important;left:6px!important;font-size:12px!important;padding:5px 10px;min-height:32px;display:flex;align-items:center}
  #back{top:calc(var(--sa) + 126px);left:6px;min-height:44px;display:none;align-items:center;font-size:15px}
  #help{display:none}
- #bar{left:6px;right:6px;bottom:calc(var(--sb) + 6px);transform:none;max-width:none;justify-content:flex-start}
+ #bar{left:50%;right:auto;bottom:calc(var(--sb) + 6px);transform:translateX(-50%);max-width:calc(100vw - 12px)}
  .slot{flex:none;min-width:62px;min-height:56px;padding:6px 6px;display:block}
  #chatw{left:6px;bottom:calc(var(--sb) + 82px);width:min(calc(100vw - 150px),260px)}
  #log{max-height:38px;font-size:12px}
@@ -166,7 +183,7 @@ button,.slot,.box{touch-action:manipulation}
 </head><body>
 <div id="stats" class="box"></div>
 <div id="open" class="box" title="Dükkan & Pazar (B)">🏪 Dükkan</div>
-<div id="help" class="box">WASD / ok tuşları: yürü<br>1-9, 0: alet seç · Tıkla: kullan<br>Enter: sohbet · M: harita<br>Çitli alana her şey konur<br>T: taşı · R: kaldır<br>Z X C V: 👋 ❤️ 😂 👍 · Q E: kamera<br><b>sürüm 23<br><span id="wx"></span></b></div>
+<div id="help" class="box">WASD / ok tuşları: yürü<br>1-9, 0: alet seç · Tıkla: kullan<br>E: aletler · Enter: sohbet · M: harita<br>Çitli alana her şey konur<br>T: taşı · R: kaldır<br>Z X C V: 👋 ❤️ 😂 👍 · Q F: kamera<br><b>sürüm 24<br><span id="wx"></span></b></div>
 <div id="bar" class="box"></div>
 <div id="chatw" class="box"><div id="log"></div><div id="copen">💬 Sohbet <small style="opacity:.7;font-weight:400">(Enter)</small><i id="cbadge"></i></div></div>
 <div id="claim" class="box" style="top:50px;left:50%;transform:translateX(-50%);cursor:pointer" title="Parsel al (K)">🏡 Parsel al</div>
@@ -178,6 +195,7 @@ button,.slot,.box{touch-action:manipulation}
 <div class="cin"><input id="chat" placeholder="Mesaj yaz..." maxlength="120" autocomplete="off" enterkeyhint="send"><button id="csend">Gönder</button></div>
 <div class="cem"><button data-e="👋">👋</button><button data-e="❤️">❤️</button><button data-e="😂">😂</button><button data-e="👍">👍</button></div>
 <div id="clog"></div></div>
+<div id="tp" class="box"></div>
 <div id="bm" class="box"><div class="ch"><b>🗺️ Harita</b><button id="bmx" class="cx" title="Kapat (Esc)">✕</button></div>
 <canvas id="bmc" width="400" height="400"></canvas>
 <div class="bmf"><span>Gitmek istediğin yere dokun</span><button id="bmh">🏡 Parselim</button></div></div>
@@ -231,6 +249,9 @@ const TOOLS=[['hand','✋','El'],['hoe','⛏️','Çapa'],['move','📦','Taşı
 const DECO={fence:{cost:5},flower:{cost:3},house:{cost:80,lv:3},path:{cost:2},bench:{cost:15},lamp:{cost:20,lv:2},well:{cost:40,lv:2},barnwall:{cost:10,lv:3},scare:{cost:15,lv:2},gate:{cost:8}};
 const RC={flour:{i:{wheat:2},lv:2},bread:{i:{flour:2},lv:3},cheese:{i:{milk:2},lv:4},jam:{i:{strawberry:3},lv:2},pie:{i:{pumpkin:1,flour:1},lv:4}};
 let tool='hand',carry=null,rmPend=null;
+const tnm=t=>{const m=t[2].match(/^(.*?)\s*(\d+🪙|\([^)]*\))?$/);return [m[1],(m[2]||'').replace(/^\(|\)$/g,'')]};
+let recent=['hand','hoe','wheat_seed','chicken'];
+function selTool(t){tool=t;if(!recent.includes(t)){recent.push(t);if(recent.length>4)recent.shift()}hud()}
 
 // ---- Envanter ----
 let inv={coins:50,items:{wheat_seed:5,carrot_seed:3}};
@@ -251,9 +272,9 @@ function save(){set(ref(db,'lb/'+uid),{n:myName,xp:inv.xp||0});set(ref(db,'inv/'
 function hud(){
   const L=lvl(),a=20*(L-1)**2,b=20*L*L,pc=Math.round(((inv.xp||0)-a)/(b-a)*100);
   $('stats').innerHTML=`<div class="lv">${L}</div><div class="st"><b>🪙 ${inv.coins}</b><i class="xpb"><u style="width:${pc}%"></u></i><small>${Object.entries(inv.items).map(([k,v])=>NAME[k]+' '+v).join(' · ')||'Çantan boş'}</small></div>`;
-  const _sl=$('bar').scrollLeft;$('bar').innerHTML=TOOLS.map((t,i)=>`<div class="slot ${t[0]===tool?'on':''}" data-t="${t[0]}">${t[1]}<br><small>${i+1}. ${t[2]}${t[0].endsWith('_seed')?' ('+have(t[0])+')':''}</small></div>`).join('');$('bar').scrollLeft=_sl;
+  $('bar').innerHTML='<div class="slot menu" data-t="__menu">🎒<br><small>Aletler (E)</small></div>'+recent.map(id=>{const t=TOOLS.find(x=>x[0]===id),n=tnm(t)[0];return `<div class="slot ${id===tool?'on':''}" data-t="${id}">${t[1]}<br><small>${n}${id.endsWith('_seed')?' ('+have(id)+')':''}</small></div>`}).join('');
 }
-$('bar').onclick=e=>{const s=e.target.closest('.slot');if(s){tool=s.dataset.t;hud()}};
+$('bar').onclick=e=>{const s=e.target.closest('.slot');if(!s)return;if(s.dataset.t==='__menu')openTools();else selTool(s.dataset.t)};
 {const D=Math.floor(now()/86400000);if(inv.lg!==D){inv.st=inv.lg===D-1?(inv.st||0)+1:1;inv.lg=D;const b=Math.min(100,20*inv.st);inv.coins+=b;setTimeout(()=>toast('🎁 Günlük giriş: '+inv.st+'. gün · +'+b+'🪙'),1500)}}
 await save();
 // gelen satış paraları
@@ -376,15 +397,16 @@ set(myRef,{x:me.x,z:me.z,n:myName,c:hue,ht:(inv.look&&inv.look.ht)||0});
 const keys={};
 addEventListener('keydown',e=>{
   if(e.target.tagName==='INPUT'){if(e.key==='Escape'){if(e.target.id==='chat')closeChat();else e.target.blur()}return}
-  if(e.key==='Escape'){panel.style.display='none';closeChat();closeMap();return}
+  if(e.key==='Escape'){panel.style.display='none';closeChat();closeMap();closeTools();return}
   if(e.key==='Enter'){openChat();e.preventDefault();return}
   if(e.key==='b'||e.key==='B'){togglePanel();return}
   if(e.key==='m'||e.key==='M'){openMap();return}
-  if(e.key==='t'||e.key==='T'){tool='move';hud();return}
-  if(e.key==='r'||e.key==='R'){tool='remove';hud();return}
+  if(e.key==='e'||e.key==='E'){if(!e.repeat)tpOpen()?closeTools():openTools();return}
+  if(e.key==='t'||e.key==='T'){selTool('move');return}
+  if(e.key==='r'||e.key==='R'){selTool('remove');return}
   if(e.key==='k'||e.key==='K'){claim();return}
   const EM={z:'👋',x:'❤️',c:'😂',v:'👍'}[e.key.toLowerCase()];if(EM&&!e.repeat){push(ref(db,'chat'),{n:myName,m:EM});return}
-  const i=e.key==='0'?10:+e.key;if(i>=1&&i<=TOOLS.length){tool=TOOLS[i-1][0];hud();return}
+  const i=e.key==='0'?10:+e.key;if(i>=1&&i<=TOOLS.length){selTool(TOOLS[i-1][0]);return}
   keys[e.key.toLowerCase()]=true;
 });
 addEventListener('keyup',e=>keys[e.key.toLowerCase()]=false);
@@ -398,7 +420,7 @@ ren.domElement.addEventListener('pointermove',e=>{const p=pick(e);if(p){hover.po
 const cptr=new Set();let tp=null;
 const hoverAt=p=>{hover.position.set(p.x,-.15,p.z)};
 ren.domElement.addEventListener('pointerdown',e=>{
-  if(cpOpen()||bmOpen()){closeChat();closeMap();return}
+  if(cpOpen()||bmOpen()||tpOpen()){closeChat();closeMap();closeTools();return}
   if(panel.style.display==='block'){panel.style.display='none';return}
   if(e.pointerType==='mouse'){const p=pick(e);if(p)act(p.x,p.z);return}
   cptr.add(e.pointerId);if(cptr.size>1){tp=null;return}
@@ -485,7 +507,7 @@ function act(x,z){
 }
 
 // ---- Dükkan & Pazar ----
-function togglePanel(){closeChat();closeMap();panel.style.display=panel.style.display==='block'?'none':'block';renderPanel()}
+function togglePanel(){closeChat();closeMap();closeTools();panel.style.display=panel.style.display==='block'?'none':'block';renderPanel()}
 $('open').onclick=togglePanel;
 onValue(ref(db,'market'),s=>{market=s.val()||{};if(document.activeElement.tagName!=='INPUT')renderPanel()});
 let ptab='buy';
@@ -602,10 +624,24 @@ function bubble(m){const T=m.n===myName?meMesh:(Object.values(others).find(o=>o.
   g.font='600 34px Fredoka,sans-serif';g.fillStyle='#3a2716';g.textAlign='center';g.fillText(String(m.m).slice(0,28),256,53);
   const sp=new THREE.Sprite(new THREE.SpriteMaterial({map:new THREE.CanvasTexture(c),depthTest:false}));sp.scale.set(4,.75,1);sp.position.y=2.4;sp.name='bub';
   const old=T.getObjectByName('bub');if(old)T.remove(old);T.add(sp);setTimeout(()=>T.remove(sp),5000)}
+// ---- Alet paneli (E / 🎒) ----
+const tpl=$('tp'),tpOpen=()=>tpl.style.display==='block';
+const TCAT=[['🌾 Tarım',['hand','hoe','wheat_seed','carrot_seed','tomato_seed','corn_seed','strawberry_seed','pumpkin_seed','can']],['🐔 Hayvan',['chicken','cow','sheep','feed','tag']],['🏠 Yapı & Dekor',['fence','gate','barnwall','house','path','flower','bench','lamp','well','tree','scare']],['🛠️ Diğer',['move','remove','rod']]];
+const reqLv=t=>t.endsWith('_seed')?(LV[t.split('_')[0]]||0):ANIM[t]?ANIM[t].lv:t==='tree'?2:(DECO[t]&&DECO[t].lv)||0;
+function renderTools(){
+  const cur=TOOLS.find(t=>t[0]===tool);
+  tpl.innerHTML=`<div class="ph"><b>🎒 Aletler</b><span class="cur">${cur[1]} ${tnm(cur)[0]}</span><button class="cx" title="Kapat (E / Esc)">✕</button></div><div class="tb">`+
+  TCAT.map(([h,ids])=>`<h4>${h}</h4><div class="g">`+ids.map(id=>{const i=TOOLS.findIndex(t=>t[0]===id);if(i<0)return '';const t=TOOLS[i],[n,sub]=tnm(t),lk=lvl()<reqLv(id);
+    return `<div class="c ${id===tool?'on':''} ${lk?'lock':''}" data-t="${id}">${i<10?`<span class="n">${i===9?0:i+1}</span>`:''}<span class="e">${t[1]}</span>${n}<small>${lk?'🔒 Sv.'+reqLv(id):id.endsWith('_seed')?'Çantada: '+have(id):sub||'&nbsp;'}</small></div>`}).join('')+'</div>').join('')+'</div>';
+}
+function openTools(){panel.style.display='none';closeChat();closeMap();for(const k in keys)keys[k]=false;renderTools();tpl.style.display='block';tpl.scrollTop=0}
+function closeTools(){tpl.style.display='none'}
+tpl.onclick=e=>{if(e.target.closest('.cx')){closeTools();return}const c=e.target.closest('.c');if(!c)return;selTool(c.dataset.t);closeTools();const t=TOOLS.find(x=>x[0]===c.dataset.t);toast(t[1]+' '+tnm(t)[0]+' seçildi')};
+setTimeout(()=>toast('🎒 Alet seçmek için E tuşu (telefonda alttaki 🎒 düğmesi)'),9500);
 // ---- Sohbet (üstte açılan panel, ✕ ile kapanır) ----
 const cp=$('cp'),cin=$('chat');let unread=0;
 const cpOpen=()=>cp.style.display==='block';
-function openChat(){panel.style.display='none';closeMap();for(const k in keys)keys[k]=false;cp.style.display='block';unread=0;badge();setTimeout(()=>cin.focus(),30)}
+function openChat(){panel.style.display='none';closeMap();closeTools();for(const k in keys)keys[k]=false;cp.style.display='block';unread=0;badge();setTimeout(()=>cin.focus(),30)}
 function closeChat(){if(!cpOpen())return;cp.style.display='none';cin.blur()}
 function badge(){const b=$('cbadge');b.style.display=unread?'inline-block':'none';b.textContent=unread}
 function sendChat(m){m=String(m).trim();if(m)push(ref(db,'chat'),{n:myName,m:m.slice(0,120)})}
@@ -622,7 +658,7 @@ onValue(query(ref(db,'chat'),limitToLast(30)),s=>{
 // ---- Harita (mini haritaya bas → büyük harita → dokun, oraya git) ----
 const bm=$('bm'),bmc=$('bmc'),bg=bmc.getContext('2d'),BS=bmc.width/N;
 const bmOpen=()=>bm.style.display==='block';
-function openMap(){panel.style.display='none';closeChat();bm.style.display='block';drawBig()}
+function openMap(){panel.style.display='none';closeChat();closeTools();bm.style.display='block';drawBig()}
 function closeMap(){bm.style.display='none'}
 function goTo(x,z){back={x:me.x,z:me.z};$('back').style.display='flex';me.x=Math.max(0,Math.min(N-1,x));me.z=Math.max(0,Math.min(N-1,z));lastSent='';closeMap();toast('📍 Gidildi · ↩ ile geri dönebilirsin')}
 function drawBig(){const g=bg;
@@ -639,7 +675,7 @@ bmc.addEventListener('click',e=>{const r=bmc.getBoundingClientRect();goTo(Math.f
 setTimeout(()=>toast('🗺️ Mini haritaya dokunarak istediğin yere gidebilirsin'),5000);
 
 let zoom=1,pd=0,yaw=0;
-for(const [id,k] of [['rl','q'],['rr','e']]){const el=$(id);el.addEventListener('pointerdown',()=>keys[k]=true);for(const ev of['pointerup','pointerleave','pointercancel'])el.addEventListener(ev,()=>keys[k]=false)}
+for(const [id,k] of [['rl','q'],['rr','f']]){const el=$(id);el.addEventListener('pointerdown',()=>keys[k]=true);for(const ev of['pointerup','pointerleave','pointercancel'])el.addEventListener(ev,()=>keys[k]=false)}
 addEventListener('wheel',e=>{if(e.target===ren.domElement)zoom=Math.max(.6,Math.min(2,zoom+e.deltaY*.001))},{passive:true});
 ren.domElement.addEventListener('touchmove',e=>{if(e.touches.length===2){const d=Math.hypot(e.touches[0].clientX-e.touches[1].clientX,e.touches[0].clientY-e.touches[1].clientY);if(pd)zoom=Math.max(.6,Math.min(2,zoom*pd/d));pd=d}},{passive:true});
 ren.domElement.addEventListener('touchend',()=>pd=0);
@@ -706,7 +742,7 @@ function loop(){
   requestAnimationFrame(loop);
   const dt=Math.min(clock.getDelta(),.1);
   let dx=(keys.d||keys.arrowright?1:0)-(keys.a||keys.arrowleft?1:0),dz=(keys.s||keys.arrowdown?1:0)-(keys.w||keys.arrowup?1:0);
-  dx+=jx;dz+=jz;yaw+=((keys.e?1:0)-(keys.q?1:0))*1.8*dt;{const c=Math.cos(yaw),sn2=Math.sin(yaw),a=dx,b=dz;dx=a*c+b*sn2;dz=-a*sn2+b*c}if(Math.abs(dx)+Math.abs(dz)>.1){const l=Math.hypot(dx,dz);const nx=Math.max(0,Math.min(N-1,me.x+dx/l*5*dt)),nz=Math.max(0,Math.min(N-1,me.z+dz/l*5*dt)),W=(a,b)=>isW(tiles[Math.round(a)+'_'+Math.round(b)]),stuck=W(me.x,me.z);
+  dx+=jx;dz+=jz;yaw+=((keys.f?1:0)-(keys.q?1:0))*1.8*dt;{const c=Math.cos(yaw),sn2=Math.sin(yaw),a=dx,b=dz;dx=a*c+b*sn2;dz=-a*sn2+b*c}if(Math.abs(dx)+Math.abs(dz)>.1){const l=Math.hypot(dx,dz);const nx=Math.max(0,Math.min(N-1,me.x+dx/l*5*dt)),nz=Math.max(0,Math.min(N-1,me.z+dz/l*5*dt)),W=(a,b)=>isW(tiles[Math.round(a)+'_'+Math.round(b)]),stuck=W(me.x,me.z);
     if(stuck||!W(nx,me.z))me.x=nx;if(stuck||!W(me.x,nz))me.z=nz;meMesh.rotation.y=Math.atan2(dx,dz)}
   meMesh.position.set(me.x,0,me.z);
   for(const o of Object.values(others)){o.m.position.x+=(o.tx-o.m.position.x)*.2;o.m.position.z+=(o.tz-o.m.position.z)*.2}
