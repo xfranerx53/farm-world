@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html lang="tr"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Çiftlik Dünyası</title>
+<style>
+*{box-sizing:border-box}body{margin:0;overflow:hidden;font:14px system-ui,sans-serif;background:#9ad4f5}
+canvas{display:block}
+.box{position:fixed;background:rgba(20,20,20,.72);color:#fff;border-radius:10px;padding:8px 12px}
+#stats{top:10px;left:10px}#help{top:10px;right:10px;font-size:12px;text-align:right}
+#bar{bottom:10px;left:50%;transform:translateX(-50%);display:flex;gap:6px}
+.slot{padding:6px 10px;border-radius:8px;border:2px solid transparent;text-align:center;cursor:pointer;min-width:70px}
+.slot.on{border-color:#ffd54a;background:rgba(255,213,74,.2)}
+#chatw{bottom:10px;left:10px;width:260px}#log{font-size:12px;max-height:110px;overflow:hidden;margin-bottom:6px}
+#chat{width:100%;border:0;border-radius:6px;padding:5px}
+#panel{display:none;top:50%;left:50%;transform:translate(-50%,-50%);width:min(520px,94vw);max-height:80vh;overflow:auto;line-height:2}
+#panel button,#panel input,#panel select{margin:2px;padding:3px 8px;border-radius:6px;border:0}
+#panel button{cursor:pointer;background:#ffd54a}
+#toast{top:60px;left:50%;transform:translateX(-50%);display:none}
+#open{top:10px;left:50%;transform:translateX(-50%);cursor:pointer}
+</style>
+<script type="importmap">{"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js"}}</script>
+</head><body>
+<div id="stats" class="box"></div>
+<div id="open" class="box">🏪 Dükkan & Pazar (B)</div>
+<div id="help" class="box">WASD / ok tuşları: yürü<br>1-5: alet seç · Tıkla: kullan<br>Enter: sohbet</div>
+<div id="bar" class="box"></div>
+<div id="chatw" class="box"><div id="log"></div><input id="chat" placeholder="Enter ile yaz..." maxlength="120"></div>
+<div id="panel" class="box"></div>
+<div id="toast" class="box"></div>
+
+<script type="module">
+import * as THREE from 'three';
+import {initializeApp} from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js';
+import {getAuth, signInAnonymously} from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js';
+import {getDatabase, ref, set, get, remove, push, onValue, onChildAdded, onChildChanged, onChildRemoved, onDisconnect, runTransaction, query, limitToLast} from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js';
+
+// ====== BURAYI KENDİ FIREBASE BİLGİLERİNLE DEĞİŞTİR ======
+const firebaseConfig = {
+  apiKey: "AIzaSyDmA1n75thfA5sU4ujk4j5DMGi_nx0qiIc",
+  authDomain: "farm-world-10628.firebaseapp.com",
+  databaseURL: "https://farm-world-10628-default-rtdb.europe-west1.firebasedatabase.app",
+  projectId: "farm-world-10628",
+  storageBucket: "farm-world-10628.firebasestorage.app",
+  messagingSenderId: "970497975783",
+  appId: "1:970497975783:web:a207de8d3fb5f4b1ae4942"
+};
+// =========================================================
+
+const $=id=>document.getElementById(id);
+const esc=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+function toast(t){const e=$('toast');e.textContent=t;e.style.display='block';clearTimeout(toast.t);toast.t=setTimeout(()=>e.style.display='none',2000)}
+
+const app=initializeApp(firebaseConfig),auth=getAuth(app),db=getDatabase(app);
+await signInAnonymously(auth);
+const uid=auth.currentUser.uid;
+let off=0;onValue(ref(db,'.info/serverTimeOffset'),s=>off=s.val()||0);
+const now=()=>Date.now()+off;
+
+let myName=null;try{myName=localStorage.getItem('n')}catch(e){}
+if(!myName){myName=(prompt('Oyuncu adın?')||'Çiftçi').slice(0,14);try{localStorage.setItem('n',myName)}catch(e){}}
+const hue=[...uid].reduce((a,c)=>(a*31+c.charCodeAt(0))%360,7)/360;
+
+// ---- Oyun verileri ----
+const N=40,GROW={wheat:60000,carrot:90000},RIPE={wheat:0xe3c94a,carrot:0xf08a24},EGG=45000;
+const PRICE={wheat:5,carrot:8,egg:6},SEED={wheat:2,carrot:3},CHICKEN=30;
+const NAME={wheat:'Buğday',carrot:'Havuç',egg:'Yumurta',wheat_seed:'Buğday tohumu',carrot_seed:'Havuç tohumu'};
+const TOOLS=[['hand','✋','El (hasat)'],['hoe','⛏️','Çapa'],['wheat_seed','🌾','Buğday'],['carrot_seed','🥕','Havuç'],['chicken','🐔','Tavuk 30🪙']];
+let tool='hand';
+
+// ---- Envanter ----
+let inv={coins:50,items:{wheat_seed:5,carrot_seed:3}};
+const snap=await get(ref(db,'inv/'+uid));
+if(snap.exists()){inv=snap.val();inv.items=inv.items||{}}
+const have=k=>inv.items[k]||0;
+const add=(k,n)=>{inv.items[k]=have(k)+n;if(inv.items[k]<=0)delete inv.items[k]};
+function save(){set(ref(db,'inv/'+uid),inv);hud();renderPanel()}
+function hud(){
+  $('stats').textContent='🪙 '+inv.coins+'   '+Object.entries(inv.items).map(([k,v])=>NAME[k]+': '+v).join(' · ');
+  $('bar').innerHTML=TOOLS.map((t,i)=>`<div class="slot ${t[0]===tool?'on':''}" data-t="${t[0]}">${t[1]}<br><small>${i+1}. ${t[2]}${t[0].endsWith('_seed')?' ('+have(t[0])+')':''}</small></div>`).join('');
+}
+$('bar').onclick=e=>{const s=e.target.closest('.slot');if(s){tool=s.dataset.t;hud()}};
+await save();
+// gelen satış paraları
+onChildAdded(ref(db,'inbox/'+uid),s=>{inv.coins+=s.val().coins||0;remove(s.ref);save();toast('Ürünün satıldı! +'+s.val().coins+'🪙')});
+
+// ---- Sahne ----
+const scene=new THREE.Scene();scene.background=new THREE.Color(0x9ad4f5);scene.fog=new THREE.Fog(0x9ad4f5,25,70);
+const cam=new THREE.PerspectiveCamera(55,innerWidth/innerHeight,.1,200);
+const ren=new THREE.WebGLRenderer({antialias:true});ren.setSize(innerWidth,innerHeight);ren.setPixelRatio(Math.min(devicePixelRatio,2));
+document.body.prepend(ren.domElement);
+scene.add(new THREE.AmbientLight(0xffffff,.75));
+const sun=new THREE.DirectionalLight(0xffffff,.8);sun.position.set(10,20,8);scene.add(sun);
+addEventListener('resize',()=>{cam.aspect=innerWidth/innerHeight;cam.updateProjectionMatrix();ren.setSize(innerWidth,innerHeight)});
+
+const gg=new THREE.BoxGeometry(.98,.4,.98);gg.translate(0,-.2,0);
+const ground=new THREE.InstancedMesh(gg,new THREE.MeshLambertMaterial(),N*N);
+const dm=new THREE.Object3D(),col=new THREE.Color();
+for(let z=0;z<N;z++)for(let x=0;x<N;x++){dm.position.set(x,0,z);dm.updateMatrix();ground.setMatrixAt(z*N+x,dm.matrix);col.setHex(0x5fae4a).multiplyScalar(.92+((x*7+z*13)%5)*.03);ground.setColorAt(z*N+x,col)}
+scene.add(ground);
+const hover=new THREE.LineSegments(new THREE.EdgesGeometry(new THREE.BoxGeometry(1.02,.5,1.02)),new THREE.LineBasicMaterial({color:0xffffff}));
+hover.position.y=-.15;scene.add(hover);
+
+// ---- Dünya (herkes ortak) ----
+const tiles={},objs={},cropGeo=new THREE.BoxGeometry(.5,1,.5);cropGeo.translate(0,.5,0);
+function paint(key){
+  const [x,z]=key.split('_').map(Number),d=tiles[key];
+  const c=!d?0x5fae4a:d.s==='soil'?0x8a5a2b:d.s==='crop'?0x6b4423:0xb8a15a;
+  col.setHex(c).multiplyScalar(.92+((x*7+z*13)%5)*.03);ground.setColorAt(z*N+x,col);ground.instanceColor.needsUpdate=true;
+}
+function sync(key){
+  const d=tiles[key];paint(key);
+  if(objs[key]){scene.remove(objs[key]);delete objs[key]}
+  if(!d||d.s==='soil')return;
+  const [x,z]=key.split('_').map(Number);let m;
+  if(d.s==='crop'){m=new THREE.Mesh(cropGeo,new THREE.MeshLambertMaterial({color:0x3fa34d}))}
+  else{
+    m=new THREE.Group();
+    const b=new THREE.Mesh(new THREE.BoxGeometry(.5,.4,.5),new THREE.MeshLambertMaterial({color:0xffffff}));b.position.y=.3;m.add(b);
+    const h=new THREE.Mesh(new THREE.BoxGeometry(.25,.25,.25),new THREE.MeshLambertMaterial({color:0xffffff}));h.position.set(0,.6,.2);m.add(h);
+    const e=new THREE.Mesh(new THREE.SphereGeometry(.15),new THREE.MeshLambertMaterial({color:0xffe066}));e.position.set(.35,.2,0);e.name='egg';m.add(e);
+  }
+  m.position.set(x,0,z);m.userData=d;scene.add(m);objs[key]=m;
+}
+const wref=ref(db,'world');
+onChildAdded(wref,s=>{tiles[s.key]=s.val();sync(s.key)});
+onChildChanged(wref,s=>{tiles[s.key]=s.val();sync(s.key)});
+onChildRemoved(wref,s=>{delete tiles[s.key];sync(s.key)});
+const gA=new THREE.Color(0x3fa34d),gB=new THREE.Color();
+
+// ---- Oyuncular ----
+function label(t){
+  const c=document.createElement('canvas');c.width=256;c.height=64;const g=c.getContext('2d');
+  g.font='bold 34px sans-serif';g.textAlign='center';g.fillStyle='#fff';g.strokeStyle='#000';g.lineWidth=6;
+  g.strokeText(t,128,44);g.fillText(t,128,44);
+  const s=new THREE.Sprite(new THREE.SpriteMaterial({map:new THREE.CanvasTexture(c),depthTest:false}));s.scale.set(2.2,.55,1);s.position.y=1.6;return s;
+}
+function mkPlayer(n,h){
+  const g=new THREE.Group();
+  const b=new THREE.Mesh(new THREE.BoxGeometry(.6,1,.6),new THREE.MeshLambertMaterial({color:new THREE.Color().setHSL(h,.6,.5)}));b.position.y=.5;g.add(b);
+  const f=new THREE.Mesh(new THREE.BoxGeometry(.4,.4,.4),new THREE.MeshLambertMaterial({color:0xf1c9a0}));f.position.y=1.2;g.add(f);
+  g.add(label(n));scene.add(g);return g;
+}
+const me={x:N/2,z:N/2},meMesh=mkPlayer(myName,hue);meMesh.position.set(me.x,0,me.z);
+const others={},pref=ref(db,'players');
+const myRef=ref(db,'players/'+uid);
+onDisconnect(myRef).remove();
+const upd=s=>{if(s.key===uid)return;const v=s.val();if(!others[s.key])others[s.key]={m:mkPlayer(v.n||'?',v.c||0),tx:v.x,tz:v.z},others[s.key].m.position.set(v.x,0,v.z);else{others[s.key].tx=v.x;others[s.key].tz=v.z}};
+onChildAdded(pref,upd);onChildChanged(pref,upd);
+onChildRemoved(pref,s=>{if(others[s.key]){scene.remove(others[s.key].m);delete others[s.key]}});
+let lastSent='';
+setInterval(()=>{const v=me.x.toFixed(2)+','+me.z.toFixed(2);if(v!==lastSent){lastSent=v;set(myRef,{x:+me.x.toFixed(2),z:+me.z.toFixed(2),n:myName,c:hue})}},100);
+set(myRef,{x:me.x,z:me.z,n:myName,c:hue});
+
+// ---- Girdi ----
+const keys={};
+addEventListener('keydown',e=>{
+  if(e.target.tagName==='INPUT'){if(e.key==='Escape')e.target.blur();return}
+  if(e.key==='Enter'){$('chat').focus();e.preventDefault();return}
+  if(e.key==='b'||e.key==='B'){togglePanel();return}
+  const i=+e.key;if(i>=1&&i<=5){tool=TOOLS[i-1][0];hud();return}
+  keys[e.key.toLowerCase()]=true;
+});
+addEventListener('keyup',e=>keys[e.key.toLowerCase()]=false);
+const ray=new THREE.Raycaster(),pt=new THREE.Vector2();
+function pick(e){
+  pt.set(e.clientX/innerWidth*2-1,-(e.clientY/innerHeight)*2+1);ray.setFromCamera(pt,cam);
+  const h=ray.intersectObject(ground)[0];if(!h)return null;
+  return {x:h.instanceId%N,z:Math.floor(h.instanceId/N)};
+}
+ren.domElement.addEventListener('pointermove',e=>{const p=pick(e);if(p)hover.position.set(p.x,-.15,p.z)});
+ren.domElement.addEventListener('pointerdown',e=>{const p=pick(e);if(p)act(p.x,p.z)});
+
+function act(x,z){
+  if(Math.hypot(x-me.x,z-me.z)>7)return toast('Çok uzak, yaklaş');
+  const key=x+'_'+z,d=tiles[key],r=ref(db,'world/'+key);
+  if(tool==='hand'){
+    if(!d)return;
+    if(d.s==='crop'){
+      if(now()-d.t>=GROW[d.k]){add(d.k,1);save();set(r,{s:'soil'});toast(NAME[d.k]+' hasat edildi')}
+      else toast('Henüz olgunlaşmadı')
+    }else if(d.s==='chicken'){
+      if(now()-d.t>=EGG){add('egg',1);save();set(r,{s:'chicken',t:now()});toast('Yumurta toplandı')}
+      else toast('Yumurta henüz hazır değil')
+    }
+  }else if(tool==='hoe'){
+    if(!d)set(r,{s:'soil'});else if(d.s==='soil')remove(r);
+  }else if(tool.endsWith('_seed')){
+    const k=tool.split('_')[0];
+    if(!d||d.s!=='soil')return toast('Önce çapayla toprak aç');
+    if(!have(tool))return toast('Tohumun bitti, dükkandan al (B)');
+    add(tool,-1);save();set(r,{s:'crop',k,t:now()});
+  }else if(tool==='chicken'){
+    if(d)return toast('Boş çim bir alan seç');
+    if(inv.coins<CHICKEN)return toast('Yetersiz para');
+    inv.coins-=CHICKEN;save();set(r,{s:'chicken',t:now()});
+  }
+}
+
+// ---- Dükkan & Pazar ----
+const panel=$('panel');let market={};
+function togglePanel(){panel.style.display=panel.style.display==='block'?'none':'block';renderPanel()}
+$('open').onclick=togglePanel;
+onValue(ref(db,'market'),s=>{market=s.val()||{};if(document.activeElement.tagName!=='INPUT')renderPanel()});
+function renderPanel(){
+  if(panel.style.display!=='block')return;
+  const sel=['wheat','carrot','egg'].filter(k=>have(k)>0);
+  let h=`<button data-a="close" style="float:right">✕</button><b>🏪 Dükkan</b><div>Tohum al: `+
+  ['wheat','carrot'].map(k=>`<button data-a="buy" data-k="${k}">${NAME[k+'_seed']} ${SEED[k]}🪙</button>`).join('')+
+  `</div><div>Sat: `+(sel.length?sel.map(k=>`<button data-a="sell" data-k="${k}">${NAME[k]} ×${have(k)} → ${PRICE[k]}🪙</button>`).join(''):'<i>satacak ürünün yok</i>')+
+  `</div><hr><b>🧺 Oyuncu pazarı</b><div>İlan ver: <select id="mi">${sel.map(k=>`<option value="${k}">${NAME[k]}</option>`).join('')}</select>
+  <input id="mq" type="number" min="1" placeholder="adet" style="width:70px"><input id="mp" type="number" min="1" placeholder="toplam fiyat" style="width:110px">
+  <button data-a="list">İlan ver</button></div>`;
+  const L=Object.entries(market);
+  h+=L.length?L.map(([id,l])=>`<div>${esc(l.n)}: ${l.qty}× ${NAME[l.item]||esc(l.item)} — <b>${l.price}🪙</b> `+
+    (l.u===uid?`<button data-a="cancel" data-k="${id}">İptal</button>`:`<button data-a="purchase" data-k="${id}">Satın al</button>`)+`</div>`).join(''):'<i>Henüz ilan yok</i>';
+  panel.innerHTML=h;
+}
+// ilanı atomik olarak al (iki kişi aynı anda alamaz)
+async function take(id,cond){
+  let got=null;
+  await runTransaction(ref(db,'market/'+id),cur=>{got=null;if(cur&&cond(cur)){got=cur;return null}return undefined});
+  return got;
+}
+panel.onclick=async e=>{
+  const b=e.target.closest('button');if(!b)return;const a=b.dataset.a,k=b.dataset.k;
+  if(a==='close')panel.style.display='none';
+  if(a==='buy'){if(inv.coins<SEED[k])return toast('Yetersiz para');inv.coins-=SEED[k];add(k+'_seed',1);save()}
+  if(a==='sell'){add(k,-1);inv.coins+=PRICE[k];save()}
+  if(a==='list'){
+    const item=$('mi')?.value,q=+$('mq').value|0,p=+$('mp').value|0;
+    if(!item||q<1||p<1||have(item)<q)return toast('Geçersiz ilan');
+    add(item,-q);save();push(ref(db,'market'),{u:uid,n:myName,item,qty:q,price:p});
+  }
+  if(a==='cancel'){const g=await take(k,c=>c.u===uid);if(g){add(g.item,g.qty);save()}}
+  if(a==='purchase'){
+    const g=await take(k,c=>c.u!==uid&&inv.coins>=c.price);
+    if(g){inv.coins-=g.price;add(g.item,g.qty);save();push(ref(db,'inbox/'+g.u),{coins:g.price});toast('Satın alındı!')}
+    else toast('Alınamadı (para yetmiyor veya ilan gitti)');
+  }
+};
+
+// ---- Sohbet ----
+onValue(query(ref(db,'chat'),limitToLast(6)),s=>{
+  const log=$('log');log.textContent='';
+  Object.values(s.val()||{}).forEach(m=>{const d=document.createElement('div');d.textContent=m.n+': '+m.m;log.appendChild(d)});
+});
+$('chat').addEventListener('keydown',e=>{
+  if(e.key==='Enter'){const v=e.target.value.trim();if(v)push(ref(db,'chat'),{n:myName,m:v.slice(0,120)});e.target.value='';e.target.blur()}
+});
+
+// ---- Ana döngü ----
+const clock=new THREE.Clock();
+function loop(){
+  requestAnimationFrame(loop);
+  const dt=Math.min(clock.getDelta(),.1);
+  let dx=(keys.d||keys.arrowright?1:0)-(keys.a||keys.arrowleft?1:0),dz=(keys.s||keys.arrowdown?1:0)-(keys.w||keys.arrowup?1:0);
+  if(dx||dz){const l=Math.hypot(dx,dz);me.x=Math.max(0,Math.min(N-1,me.x+dx/l*5*dt));me.z=Math.max(0,Math.min(N-1,me.z+dz/l*5*dt));meMesh.rotation.y=Math.atan2(dx,dz)}
+  meMesh.position.set(me.x,0,me.z);
+  for(const o of Object.values(others)){o.m.position.x+=(o.tx-o.m.position.x)*.2;o.m.position.z+=(o.tz-o.m.position.z)*.2}
+  const t=now();
+  for(const m of Object.values(objs)){
+    const d=m.userData;
+    if(d.s==='crop'){const p=Math.min(1,(t-d.t)/GROW[d.k]);m.scale.y=.2+.8*p;gB.setHex(RIPE[d.k]);m.material.color.copy(gA).lerp(gB,p*p)}
+    else{const e=m.getObjectByName('egg');if(e)e.visible=t-d.t>=EGG}
+  }
+  cam.position.lerp(new THREE.Vector3(me.x,11,me.z+9),.1);cam.lookAt(me.x,0,me.z);
+  ren.render(scene,cam);
+}
+hud();loop();
+</script></body></html>
