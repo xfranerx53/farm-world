@@ -999,13 +999,10 @@ function ach(t){inv.tot=inv.tot||{};inv.tot[t]=(inv.tot[t]||0)+1;inv.ach=inv.ach
   const st=CH[inv.cs||0];if(st&&st[1]===t&&inv.tot[t]-(inv.cb||0)>=st[2]){inv.coins+=st[3];gain(10);inv.cs=(inv.cs||0)+1;const nx=CH[inv.cs];inv.cb=nx?(inv.tot[nx[1]]||0):0;toast('📜 Görev tamam: '+st[0]+' +'+st[3]+'🪙')}}
 // ---- Ana döngü ----
 const clock=new THREE.Clock();
-let sT=0,prCur=0,prBlock=0,fT=0,fN=0;const CV=new THREE.Vector3(),PRM=()=>Math.min(devicePixelRatio||1,2);
+let sT=0,prCur=0,prBlock=0,fT=0,fN=0;const CV=new THREE.Vector3(),PRM=()=>Math.min(devicePixelRatio||1,[1.25,1.75,2][XC.q===undefined?2:XC.q]);
 function loop(){
   requestAnimationFrame(loop);
   const dt=Math.min(clock.getDelta(),.1);let slow=false;if((sT+=dt)>.25){sT=0;slow=true}
-  if(xMob()&&prCur){if(document.hidden){fT=fN=0}else{fT+=dt;fN++;if(fT>2){const fps=fN/fT;fT=fN=0;const now2=performance.now();
-    if(fps<38&&prCur>1){prCur=Math.max(1,prCur-.25);ren.setPixelRatio(prCur);prBlock=now2+25000}
-    else if(fps>56&&prCur<PRM()&&now2>prBlock){prCur=Math.min(PRM(),prCur+.25);ren.setPixelRatio(prCur)}}}}
   let dx=(keys.d||keys.arrowright?1:0)-(keys.a||keys.arrowleft?1:0),dz=(keys.s||keys.arrowdown?1:0)-(keys.w||keys.arrowup?1:0);
   dx+=jx;dz+=jz;yaw+=((keys.e?1:0)-(keys.q?1:0))*1.8*dt;{const c=Math.cos(yaw),sn2=Math.sin(yaw),a=dx,b=dz;dx=a*c+b*sn2;dz=-a*sn2+b*c}if(Math.abs(dx)+Math.abs(dz)>.1){const l=Math.hypot(dx,dz);const nx=Math.max(0,Math.min(N-1,me.x+dx/l*5*dt)),nz=Math.max(0,Math.min(N-1,me.z+dz/l*5*dt)),W=(a,b)=>isW(tiles[Math.round(a)+'_'+Math.round(b)]),stuck=W(me.x,me.z);
     if(stuck||!W(nx,me.z))me.x=nx;if(stuck||!W(me.x,nz))me.z=nz;meMesh.rotation.y=Math.atan2(dx,dz)}
@@ -1147,7 +1144,8 @@ function XCFG(R,B){
   c+=R('🎵','Müzik','',B('x_mus',null,mus?'Açık':'Kapalı'));
   c+=R('⌨️','Kısayol yazısı (PC)','',tg('help'));
   c+=R('🕹️','Joystick solda (telefon)','Sol elini kullananlar için',tg('jl'));
-  c+=R('🐢','Düşük grafik','Gölgeleri kapatır · netlik telefonda otomatik ayarlanır',tg('low'));
+  c+=R('🔍','Görüntü netliği','Hızlı: akıcı · Net: keskin (telefon ısınabilir)',B('x_q',null,['Hızlı','Dengeli','Net'][XC.q===undefined?2:XC.q]));
+  c+=R('🐢','Düşük grafik','Sadece gölgeleri kapatır',tg('low'));
   if(mapId!=='main'&&mapMeta.o===uid){const CL=['🔄 Mevsimli (otomatik)','🌸 Hep Bahar','☀️ Hep Yaz','🍂 Hep Sonbahar','❄️ Hep Kış'],RN=['🌦️ Otomatik','☀️ Hiç yağmaz','🌧️ Hep yağmurlu'];
     c+='<h4>🌍 Harita iklimi (kurucu)</h4>'+R('🌡️','İklim',CL[mapMeta.cl||0]+' · tüm oyuncular için',B('x_cl',null,'Değiştir'))+R('☔','Yağış',RN[mapMeta.rn||0],B('x_rn',null,'Değiştir'))}
   c+='<h4>🎨 Karakter</h4>'+`<div class="form"><input id="xc_h" type="range" min="0" max="100" value="${Math.round(hue*100)}"><select id="xc_ht"><option value="0">Şapkasız</option><option value="1" ${L.ht==1?'selected':''}>Şapka</option><option value="2" ${L.ht==2?'selected':''}>Taç</option></select></div>`;
@@ -1360,6 +1358,7 @@ panel.addEventListener('click',async e=>{
   const b=e.target.closest('button');if(!b||!b.dataset.a||!b.dataset.a.startsWith('x_'))return;const a=b.dataset.a,k=b.dataset.k;
   try{
     if(a==='x_tg'){XC[k]=XC[k]?0:1;xSaveCfg();xApply();renderPanel()}
+    else if(a==='x_q'){XC.q=((XC.q===undefined?2:XC.q)+1)%3;xSaveCfg();xApply();renderPanel()}
     else if(a==='x_mus'){$('mus').click();renderPanel()}
     else if(a==='x_cl'||a==='x_rn'){if(mapId==='main'||mapMeta.o!==uid)return toast('Sadece harita kurucusu değiştirebilir');const f=a==='x_cl'?'cl':'rn',v=((mapMeta[f]||0)+1)%(f==='cl'?5:3);await update(ref(db,'mapmeta/'+mapId),{[f]:v});mapMeta={...mapMeta,[f]:v};renderPanel();toast('🌍 İklim güncellendi')}
     else if(a==='x_look'){hue=$('xc_h').value/100;inv.look={...(inv.look||{}),h:hue,ht:+$('xc_ht').value,sk:+$('xc_sk').value,hr:+$('xc_hr').value,hc:+$('xc_hc').value,ac:+$('xc_ac').value};scene.remove(meMesh);meMesh=mkPlayer(myName,hue,inv.look.ht,XE());lastSent='';save();toast('🎨 Görünüm kaydedildi')}
