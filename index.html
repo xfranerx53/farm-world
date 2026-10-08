@@ -451,7 +451,7 @@ const have=k=>inv.items[k]||0;
 const add=(k,n)=>{inv.items[k]=have(k)+n;if(inv.items[k]<=0)delete inv.items[k]};
 let ac;const snd=(f,d=.12,v=.08)=>{if(!XV())return;try{ac=ac||new AudioContext();const o=ac.createOscillator(),g=ac.createGain();o.type='triangle';o.frequency.value=f;g.gain.value=v*XV()/.8;g.gain.exponentialRampToValueAtTime(.001,ac.currentTime+d);o.connect(g);g.connect(ac.destination);o.start();o.stop(ac.currentTime+d)}catch(e){}};
 const lvl=()=>Math.floor(Math.sqrt((inv.xp||0)/20))+1,gain=n=>{const L0=lvl();inv.xp=(inv.xp||0)+n;{const W=Math.floor(now()/604800000);if(!inv.wk||inv.wk.w!==W)inv.wk={w:W,xp:0};inv.wk.xp+=n}snd(420+n*60);pop('+'+n+' xp');if(lvl()>L0){toast('🎉 Seviye '+lvl()+'!');setTimeout(()=>snd(880,.4),150)}};
-const season=()=>Math.floor(now()/1200000)%4,SEAS=['🌸 Bahar','☀️ Yaz','🍂 Sonbahar','❄️ Kış'],SB=[['strawberry','carrot'],['tomato','corn'],['pumpkin','wheat','potato'],[]],SG=()=>[0x5fae4a,0x6cb83c,0xb39a3b,0xe6eef2][season()];
+const season=()=>mapMeta.cl>0?(mapMeta.cl-1)&3:Math.floor(now()/1200000)%4,SEAS=['🌸 Bahar','☀️ Yaz','🍂 Sonbahar','❄️ Kış'],SB=[['strawberry','carrot'],['tomato','corn'],['pumpkin','wheat','potato'],[]],SG=()=>[0x5fae4a,0x6cb83c,0xb39a3b,0xe6eef2][season()];
 const BOOM=['wheat','carrot','tomato','corn','strawberry','pumpkin','egg','milk','wool','potato'];
 const evW=()=>Math.floor(now()/10800000),evIdx=()=>{const r=(Math.imul(evW(),2654435761)>>>0)%100;return r<45?0:r<60?1:r<80?2:3},evBoom=()=>BOOM[(evW()*7)%BOOM.length],evm=k=>evIdx()===2&&evBoom()===k?1.3:1;
 const evShort=()=>['','🏜️ Kuraklık','📈 '+NAME[evBoom()]+' fiyatı yüksek','🌈 Bereket'][evIdx()];
@@ -573,9 +573,9 @@ const WC=new THREE.Color(0x6b5a2a),gA=new THREE.Color(0x3fa34d),gB=new THREE.Col
 
 // ---- Oyuncular ----
 function label(t){
-  const c=document.createElement('canvas');c.width=256;c.height=64;const g=c.getContext('2d');
-  g.font='bold 34px sans-serif';g.textAlign='center';g.fillStyle='#fff';g.strokeStyle='#000';g.lineWidth=6;
-  g.strokeText(t,128,44);g.fillText(t,128,44);
+  const c=document.createElement('canvas');c.width=512;c.height=128;const g=c.getContext('2d');
+  g.font='bold 68px sans-serif';g.textAlign='center';g.fillStyle='#fff';g.strokeStyle='#000';g.lineWidth=12;
+  g.strokeText(t,256,88);g.fillText(t,256,88);
   const s=new THREE.Sprite(new THREE.SpriteMaterial({map:new THREE.CanvasTexture(c),depthTest:false}));s.scale.set(2.2,.55,1);s.position.y=1.6;return s;
 }
 function mkPlayer(n,h,ht,e){
@@ -944,7 +944,7 @@ let jx=0,jz=0;const joy=$('joy'),kn=$('knob');
 const jm=e=>{const t=e.targetTouches[0],r=joy.getBoundingClientRect();let x=(t.clientX-r.left-60)/50,z=(t.clientY-r.top-60)/50;const l=Math.hypot(x,z);if(l>1){x/=l;z/=l}jx=x;jz=z;kn.style.left=40+x*40+'px';kn.style.top=40+z*40+'px';e.preventDefault()};
 joy.addEventListener('touchstart',jm,{passive:false});joy.addEventListener('touchmove',jm,{passive:false});
 joy.addEventListener('touchend',()=>{jx=jz=0;kn.style.left=kn.style.top='40px'});
-const rainAt=t=>((Math.floor(t/180000)*2654435761)>>>0)%4===0;
+const rainAt=t=>mapMeta.rn===1?false:mapMeta.rn===2?true:((Math.floor(t/180000)*2654435761)>>>0)%4===0;
 const rp=new Float32Array(900),rain=new THREE.Points(new THREE.BufferGeometry(),new THREE.PointsMaterial({color:0xaaccff,size:.12}));
 for(let i=0;i<900;i+=3){rp[i]=Math.random()*30-15;rp[i+1]=Math.random()*14;rp[i+2]=Math.random()*30-15}
 rain.geometry.setAttribute('position',new THREE.BufferAttribute(rp,3));rain.frustumCulled=false;scene.add(rain);
@@ -999,10 +999,13 @@ function ach(t){inv.tot=inv.tot||{};inv.tot[t]=(inv.tot[t]||0)+1;inv.ach=inv.ach
   const st=CH[inv.cs||0];if(st&&st[1]===t&&inv.tot[t]-(inv.cb||0)>=st[2]){inv.coins+=st[3];gain(10);inv.cs=(inv.cs||0)+1;const nx=CH[inv.cs];inv.cb=nx?(inv.tot[nx[1]]||0):0;toast('📜 Görev tamam: '+st[0]+' +'+st[3]+'🪙')}}
 // ---- Ana döngü ----
 const clock=new THREE.Clock();
-let sT=0;const CV=new THREE.Vector3();
+let sT=0,prCur=0,prBlock=0,fT=0,fN=0;const CV=new THREE.Vector3(),PRM=()=>Math.min(devicePixelRatio||1,2);
 function loop(){
   requestAnimationFrame(loop);
   const dt=Math.min(clock.getDelta(),.1);let slow=false;if((sT+=dt)>.25){sT=0;slow=true}
+  if(xMob()&&prCur){if(document.hidden){fT=fN=0}else{fT+=dt;fN++;if(fT>2){const fps=fN/fT;fT=fN=0;const now2=performance.now();
+    if(fps<38&&prCur>1){prCur=Math.max(1,prCur-.25);ren.setPixelRatio(prCur);prBlock=now2+25000}
+    else if(fps>56&&prCur<PRM()&&now2>prBlock){prCur=Math.min(PRM(),prCur+.25);ren.setPixelRatio(prCur)}}}}
   let dx=(keys.d||keys.arrowright?1:0)-(keys.a||keys.arrowleft?1:0),dz=(keys.s||keys.arrowdown?1:0)-(keys.w||keys.arrowup?1:0);
   dx+=jx;dz+=jz;yaw+=((keys.e?1:0)-(keys.q?1:0))*1.8*dt;{const c=Math.cos(yaw),sn2=Math.sin(yaw),a=dx,b=dz;dx=a*c+b*sn2;dz=-a*sn2+b*c}if(Math.abs(dx)+Math.abs(dz)>.1){const l=Math.hypot(dx,dz);const nx=Math.max(0,Math.min(N-1,me.x+dx/l*5*dt)),nz=Math.max(0,Math.min(N-1,me.z+dz/l*5*dt)),W=(a,b)=>isW(tiles[Math.round(a)+'_'+Math.round(b)]),stuck=W(me.x,me.z);
     if(stuck||!W(nx,me.z))me.x=nx;if(stuck||!W(me.x,nz))me.z=nz;meMesh.rotation.y=Math.atan2(dx,dz)}
@@ -1077,7 +1080,7 @@ TCAT[2][1].push('hedge','haybale','mailbox','sign','fountain','statue');TCAT[3][
 function xSaveCfg(){try{localStorage.setItem('xc',JSON.stringify(XC))}catch(e){}}
 function xApply(){
   $('help').style.display=XC.help?'':'none';document.body.classList.toggle('jl',!!XC.jl);
-  const low=!!XC.low;ren.setPixelRatio(low?1:Math.min(devicePixelRatio,xMob()?1.25:2));ren.shadowMap.enabled=!low;sun.castShadow=!low;
+  const low=!!XC.low;prCur=PRM();ren.setPixelRatio(prCur);ren.shadowMap.enabled=!low;sun.castShadow=!low;
   scene.traverse(o=>{if(o.material)(Array.isArray(o.material)?o.material:[o.material]).forEach(m=>{m.needsUpdate=true})});fit();
 }
 {
@@ -1144,7 +1147,9 @@ function XCFG(R,B){
   c+=R('🎵','Müzik','',B('x_mus',null,mus?'Açık':'Kapalı'));
   c+=R('⌨️','Kısayol yazısı (PC)','',tg('help'));
   c+=R('🕹️','Joystick solda (telefon)','Sol elini kullananlar için',tg('jl'));
-  c+=R('🐢','Düşük grafik','Gölgeleri kapatır · yavaş telefonlarda akıcılık',tg('low'));
+  c+=R('🐢','Düşük grafik','Gölgeleri kapatır · netlik telefonda otomatik ayarlanır',tg('low'));
+  if(mapId!=='main'&&mapMeta.o===uid){const CL=['🔄 Mevsimli (otomatik)','🌸 Hep Bahar','☀️ Hep Yaz','🍂 Hep Sonbahar','❄️ Hep Kış'],RN=['🌦️ Otomatik','☀️ Hiç yağmaz','🌧️ Hep yağmurlu'];
+    c+='<h4>🌍 Harita iklimi (kurucu)</h4>'+R('🌡️','İklim',CL[mapMeta.cl||0]+' · tüm oyuncular için',B('x_cl',null,'Değiştir'))+R('☔','Yağış',RN[mapMeta.rn||0],B('x_rn',null,'Değiştir'))}
   c+='<h4>🎨 Karakter</h4>'+`<div class="form"><input id="xc_h" type="range" min="0" max="100" value="${Math.round(hue*100)}"><select id="xc_ht"><option value="0">Şapkasız</option><option value="1" ${L.ht==1?'selected':''}>Şapka</option><option value="2" ${L.ht==2?'selected':''}>Taç</option></select></div>`;
   c+=`<div class="form"><select id="xc_sk">${COPT(['Ten 1','Ten 2','Ten 3','Ten 4','Ten 5'],L.sk||0)}</select><select id="xc_hr">${COPT(['Saçsız','Kısa saç','Uzun saç','Kulaklı'],L.hr||0)}</select><select id="xc_hc">${COPT(['Kahve saç','Siyah saç','Sarı saç','Kızıl saç','Mor saç','Beyaz saç'],L.hc||0)}</select></div>`;
   c+=`<div class="form"><select id="xc_ac">${COPT(['Aksesuar yok','Gözlük','Atkı','Sırt çantası','Pelerin','Halka'],L.ac||0)}</select>${B('x_look',null,'Uygula')}</div>`;
@@ -1356,6 +1361,7 @@ panel.addEventListener('click',async e=>{
   try{
     if(a==='x_tg'){XC[k]=XC[k]?0:1;xSaveCfg();xApply();renderPanel()}
     else if(a==='x_mus'){$('mus').click();renderPanel()}
+    else if(a==='x_cl'||a==='x_rn'){if(mapId==='main'||mapMeta.o!==uid)return toast('Sadece harita kurucusu değiştirebilir');const f=a==='x_cl'?'cl':'rn',v=((mapMeta[f]||0)+1)%(f==='cl'?5:3);await update(ref(db,'mapmeta/'+mapId),{[f]:v});mapMeta={...mapMeta,[f]:v};renderPanel();toast('🌍 İklim güncellendi')}
     else if(a==='x_look'){hue=$('xc_h').value/100;inv.look={...(inv.look||{}),h:hue,ht:+$('xc_ht').value,sk:+$('xc_sk').value,hr:+$('xc_hr').value,hc:+$('xc_hc').value,ac:+$('xc_ac').value};scene.remove(meMesh);meMesh=mkPlayer(myName,hue,inv.look.ht,XE());lastSent='';save();toast('🎨 Görünüm kaydedildi')}
     else if(a==='x_pw')await xPw();
     else if(a==='x_tut'){panel.style.display='none';showTut(0)}
