@@ -47,6 +47,7 @@ const firebaseConfig = {
 // =========================================================
 
 const $=id=>document.getElementById(id);
+const panel=$('panel');let market={};
 const esc=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
 function toast(t){const e=$('toast');e.textContent=t;e.style.display='block';clearTimeout(toast.t);toast.t=setTimeout(()=>e.style.display='none',2000)}
 
@@ -197,7 +198,6 @@ function act(x,z){
 }
 
 // ---- Dükkan & Pazar ----
-const panel=$('panel');let market={};
 function togglePanel(){panel.style.display=panel.style.display==='block'?'none':'block';renderPanel()}
 $('open').onclick=togglePanel;
 onValue(ref(db,'market'),s=>{market=s.val()||{};if(document.activeElement.tagName!=='INPUT')renderPanel()});
