@@ -155,6 +155,7 @@ button,.slot,.box{touch-action:manipulation}
 #lbox input{border:2px solid #e0cfa0;border-radius:10px;padding:11px 12px;font-size:16px;font-family:inherit;color:#3a2716;background:#fff;outline:0;width:100%}
 #lbox input:focus{border-color:#f0ae1c}
 #lbox .lt{display:flex;gap:6px}#lbox .lt button{flex:1;padding:9px;background:#e8dcb5;color:#6a5a30;box-shadow:none;font-size:14px}#lbox .lt button.on{background:linear-gradient(#ffd966,#f0ae1c);color:#4a2e08}
+#lbox .lrow{display:flex;gap:8px;align-items:center}#lbox .lrow>input{flex:1;min-width:0}#lbox .rm{display:flex;align-items:center;gap:5px;font-size:13px;font-weight:600;color:#3a2716;cursor:pointer;white-space:nowrap;user-select:none}#lbox .rm input{width:20px;height:20px;padding:0;flex:none;accent-color:#f0ae1c;cursor:pointer}
 #lgo{padding:12px;font-size:17px}#lgo:disabled{opacity:.6}
 #lerr{min-height:18px;color:#b00020;font-size:13px;font-weight:500}
 #lg .lo{font-size:13px;color:#3a2716;opacity:.7}#lg .lr{display:flex;gap:8px;flex-wrap:wrap;justify-content:center}#lg .lr button{padding:9px 16px;font-size:14px}
@@ -225,14 +226,14 @@ body.jl #joy{right:auto!important;left:14px}
 </head><body>
 <div id="stats" class="box"></div>
 <div id="open" class="box" title="Dükkan & Pazar (B)">🏪 Dükkan</div>
-<div id="help" class="box">WASD / ok tuşları: yürü<br>1-9, 0: alet seç · Tıkla: kullan<br>E: aletler · Enter: sohbet · M: harita<br>Çitli alana her şey konur<br>T: taşı · R: kaldır · G: çevir · U/Ctrl+Z: geri al<br>Çit/yol: basılı tutup sürükle<br>Z X C V: 👋 ❤️ 😂 👍 · Q F: kamera<br><b>sürüm 30<br><span id="wx"></span></b></div>
+<div id="help" class="box">WASD / ok tuşları: yürü<br>1-9, 0: alet seç · Tıkla: kullan<br>F: aletler · Enter: sohbet · M: harita<br>Çitli alana her şey konur<br>T: taşı · R: kaldır · G: çevir · U/Ctrl+Z: geri al<br>Çit/yol: basılı tutup sürükle<br>Z X C V: 👋 ❤️ 😂 👍 · Q E: kamera<br><b>sürüm 30<br><span id="wx"></span></b></div>
 <div id="bar" class="box"></div>
 <div id="chatw" class="box"><div id="log"></div><div id="copen">💬 Sohbet <small style="opacity:.7;font-weight:400">(Enter)</small><i id="cbadge"></i></div></div>
 <div id="claim" class="box" style="top:50px;left:50%;transform:translateX(-50%);cursor:pointer" title="Parsel al (K)">🏡 Parsel al</div>
 <div id="lg" style="position:fixed;inset:0;background:#9ad4f5;display:none;z-index:50;align-items:center;justify-content:center;flex-direction:column;gap:12px;padding:16px;overflow:auto"><b style="font-size:30px">🌾 Çiftlik Dünyası</b>
 <div id="lbox"><div class="lt"><button id="ltl" class="on">Giriş yap</button><button id="ltc">Hesap oluştur</button></div>
-<input id="lu" placeholder="Kullanıcı adı" maxlength="14" autocomplete="username" autocapitalize="none" spellcheck="false">
-<input id="lp" type="password" placeholder="Şifre (en az 6 karakter)" autocomplete="current-password">
+<div class="lrow"><input id="lu" placeholder="Kullanıcı adı" maxlength="14" autocomplete="username" autocapitalize="none" spellcheck="false"><label class="rm" title="Kullanıcı adını hatırla"><input type="checkbox" id="rmu"><span>Hatırla</span></label></div>
+<div class="lrow"><input id="lp" type="password" placeholder="Şifre (en az 6 karakter)" autocomplete="current-password"><label class="rm" title="Şifreyi hatırla"><input type="checkbox" id="rmp"><span>Hatırla</span></label></div>
 <input id="lp2" type="password" placeholder="Şifre tekrar" autocomplete="new-password" style="display:none">
 <div id="lerr"></div><button id="lgo">Giriş yap</button></div>
 </div>
@@ -278,6 +279,12 @@ const set=(r,v)=>fbset(r,(v&&typeof v==='object'&&!Array.isArray(v)&&/\/world\/[
 await auth.authStateReady();
 if(!auth.currentUser){await new Promise(r=>{$('lg').style.display='flex';
   let mode='in';const err=t=>{$('lerr').textContent=t};
+  const enc=t=>{try{return btoa(unescape(encodeURIComponent(t)))}catch(e){return''}},dec=t=>{try{return decodeURIComponent(escape(atob(t)))}catch(e){return''}};
+  const rmLoad=()=>{try{const u=localStorage.getItem('rm_u'),p=localStorage.getItem('rm_p');if(u){$('lu').value=u;$('rmu').checked=true}if(p){$('lp').value=dec(p);$('rmp').checked=true;$('rmu').checked=true}}catch(e){}};
+  const rmSave=(u,p)=>{try{if($('rmu').checked)localStorage.setItem('rm_u',u);else localStorage.removeItem('rm_u');if($('rmp').checked)localStorage.setItem('rm_p',enc(p));else localStorage.removeItem('rm_p')}catch(e){}};
+  $('rmp').onchange=()=>{if($('rmp').checked)$('rmu').checked=true};
+  $('rmu').onchange=()=>{if(!$('rmu').checked)$('rmp').checked=false};
+  rmLoad();
   const setMode=m=>{mode=m;$('ltl').className=m==='in'?'on':'';$('ltc').className=m==='up'?'on':'';$('lp2').style.display=m==='up'?'block':'none';$('lgo').textContent=m==='in'?'Giriş yap':'Hesap oluştur';$('lp').autocomplete=m==='in'?'current-password':'new-password';err('')};
   $('ltl').onclick=()=>setMode('in');$('ltc').onclick=()=>setMode('up');
   const tr={ç:'c',ğ:'g',ı:'i',ö:'o',ş:'s',ü:'u'},mail=u=>u.toLowerCase().replace(/[çğıöşü]/g,c=>tr[c]).replace(/[^a-z0-9._-]/g,'')+'@ciftlik-dunyasi.com';
@@ -287,7 +294,7 @@ if(!auth.currentUser){await new Promise(r=>{$('lg').style.display='flex';
     if(p.length<6)return err('Şifre en az 6 karakter olmalı');
     if(mode==='up'&&p!==$('lp2').value)return err('Şifreler aynı değil');
     $('lgo').disabled=true;
-    try{if(mode==='up'){const c=await createUserWithEmailAndPassword(auth,mail(u),p);try{await updateProfile(c.user,{displayName:u})}catch(e){}}else await signInWithEmailAndPassword(auth,mail(u),p);r()}
+    try{if(mode==='up'){const c=await createUserWithEmailAndPassword(auth,mail(u),p);try{await updateProfile(c.user,{displayName:u})}catch(e){}}else await signInWithEmailAndPassword(auth,mail(u),p);rmSave(u,p);r()}
     catch(e){err(AE[e.code]||(e.code||e.message))}finally{$('lgo').disabled=false}};
   for(const id of['lu','lp','lp2'])$(id).addEventListener('keydown',e=>{if(e.key==='Enter')$('lgo').click()});
 });$('lg').style.display='none'}
@@ -447,7 +454,7 @@ function save(){set(mref('lb/'+uid),{n:myName,xp:inv.xp||0});{const W=Math.floor
 function hud(){
   const L=lvl(),a=20*(L-1)**2,b=20*L*L,pc=Math.round(((inv.xp||0)-a)/(b-a)*100);
   $('stats').innerHTML=`<div class="lv">${L}</div><div class="st"><b>🪙 ${inv.coins}</b><i class="xpb"><u style="width:${pc}%"></u></i><small>${Object.entries(inv.items).map(([k,v])=>NAME[k]+' '+v).join(' · ')||'Çantan boş'}</small></div>`;
-  $('bar').innerHTML='<div class="slot menu" data-t="__menu">🎒<br><small>Aletler (E)</small></div>'+recent.map(id=>{const t=TOOLS.find(x=>x[0]===id),n=tnm(t)[0];return `<div class="slot ${id===tool?'on':''}" data-t="${id}">${t[1]}<br><small>${n}${id.endsWith('_seed')?' ('+have(id)+')':''}</small></div>`}).join('');
+  $('bar').innerHTML='<div class="slot menu" data-t="__menu">🎒<br><small>Aletler (F)</small></div>'+recent.map(id=>{const t=TOOLS.find(x=>x[0]===id),n=tnm(t)[0];return `<div class="slot ${id===tool?'on':''}" data-t="${id}">${t[1]}<br><small>${n}${id.endsWith('_seed')?' ('+have(id)+')':''}</small></div>`}).join('');
 }
 $('bar').onclick=e=>{const s=e.target.closest('.slot');if(!s)return;if(s.dataset.t==='__menu')openTools();else selTool(s.dataset.t)};
 {const D=Math.floor(now()/86400000);if(inv.lg!==D){inv.st=inv.lg===D-1?(inv.st||0)+1:1;inv.lg=D;const b=Math.min(25,5*inv.st);inv.coins+=b;setTimeout(()=>toast('🎁 Günlük giriş: '+inv.st+'. gün · +'+b+'🪙'),1500)}}
@@ -589,7 +596,7 @@ addEventListener('keydown',e=>{
   if(e.key==='Enter'){openChat();e.preventDefault();return}
   if(e.key==='b'||e.key==='B'){togglePanel();return}
   if(e.key==='m'||e.key==='M'){openMap();return}
-  if(e.key==='e'||e.key==='E'){if(!e.repeat)tpOpen()?closeTools():openTools();return}
+  if(e.key==='f'||e.key==='F'){if(!e.repeat)tpOpen()?closeTools():openTools();return}
   if(((e.ctrlKey||e.metaKey)&&e.key.toLowerCase()==='z')||e.key==='u'||e.key==='U'){if(!e.repeat)undoLast();e.preventDefault();return}
   if(e.key==='g'||e.key==='G'){if(!e.repeat)rotCycle();return}
   if(e.key==='t'||e.key==='T'){selTool('move');return}
@@ -776,7 +783,7 @@ function renderPanel(){
     const on=Object.entries(others);
     c+='<h4>👥 Çevrimiçi</h4>'+(on.length?`<div class="form"><select id="mi">${opts}</select><input id="mq" type="number" min="1" inputmode="numeric" placeholder="Hediye adedi"></div>`+on.map(([id,o])=>R('🧑‍🌾',esc(o.n||'?'),'',B('fadd',id,'➕ Ekle')+B('gift',id,'🎁 10🪙')+B('giftitem',id,'🎁 Ürün'))).join(''):'<div class="empty">Şu an kimse yok</div>');
     c+='<h4>🤝 Arkadaşlar</h4>'+(Object.entries(fr).map(([id,n])=>R('🤝',esc(n),'',B('visit',id,'Ziyaret')+B('fdel',id,'✕'))).join('')||'<div class="empty">Henüz arkadaşın yok</div>');
-    c+=`<h4>🎨 Karakter</h4><div class="form"><input id="lh" type="range" min="0" max="100" value="${Math.round(hue*100)}"><select id="lt"><option value="0">Şapkasız</option><option value="1" ${inv.look&&inv.look.ht==1?'selected':''}>Şapka</option><option value="2" ${inv.look&&inv.look.ht==2?'selected':''}>Taç</option></select>${B('look',null,'Uygula')}</div><div class="note">👤 ${esc(myName)}${auth.currentUser.isAnonymous?' · misafir (çıkarsan veri kaybolur)':''}</div><button class="wide" data-a="logout">🚪 Çıkış yap</button>`;
+    c+=`<h4>🎨 Karakter</h4><div class="form"><input id="lh" type="range" min="0" max="100" value="${Math.round(hue*100)}"><select id="lt"><option value="0">Şapkasız</option><option value="1" ${inv.look&&inv.look.ht==1?'selected':''}>Şapka</option><option value="2" ${inv.look&&inv.look.ht==2?'selected':''}>Taç</option></select>${B('look',null,'Uygula')}</div><div class="note">👤 ${esc(myName)}${auth.currentUser.isAnonymous?' · misafir (çıkarsan veri kaybolur)':''}</div><div class="form" style="gap:8px;margin-top:10px"><button class="wide" style="margin-top:0!important" data-a="maps">🏠 Ana menüye dön</button><button class="wide" style="margin-top:0!important" data-a="logout">🚪 Çıkış yap</button></div>`;
   }
   panel.innerHTML=`<div class="phead"><div class="ph"><b>${facOpen?'🏭 Fabrika':'🏪 Dükkan'}</b><span class="coin">🪙 ${inv.coins}</span><button data-a="close" class="x" title="Kapat (Esc)">✕</button></div>${facOpen?'':`<div class="tabs">${TABS.map(t=>`<button data-a="tab" data-k="${t[0]}" class="${t[0]===ptab?'on':''}"><span>${t[1]}</span>${t[2]}${XDOT(t[0])}</button>`).join('')}</div>`}</div><div class="pbody">${c}</div>`;
   for(const id in keep){const e=$(id);if(e)e.value=keep[id]}
@@ -802,7 +809,7 @@ panel.onclick=async e=>{
   if(a==='up'){const U={can:[900,4,'Büyük kova'],bask:[1200,3,'Büyük sepet'],axe:[150,2,'Balta'],pick:[220,3,'Kazma']}[k];inv.up=inv.up||{};if(inv.up[k])return;if(lvl()<U[1])return toast('Seviye '+U[1]+' gerekir');if(inv.coins<U[0])return toast('Yetersiz para');inv.coins-=U[0];inv.up[k]=1;save();toast(U[2]+' alındı!')}
   if(a==='give'||a==='giveall'){const it=gitem(),q=a==='give'?1:have(it);if(q<1||have(it)<q)return toast('Çantanda '+NAME[it]+' yok');add(it,-q);pop('+'+q+' '+NAME[it]);gain(q);save();
     await runTransaction(mref('granary/'+gday()+'/n'),c=>(c||0)+q);await runTransaction(mref('granary/'+gday()+'/c/'+uid),c=>(c||0)+q)}
-  if(a==='maps'){try{localStorage.removeItem('lm')}catch(e){}location.reload();return}
+  if(a==='maps'){try{save()}catch(e){}await new Promise(r=>setTimeout(r,400));try{localStorage.removeItem('lm')}catch(e){}location.reload();return}
   if(a==='chest'){const D0=Math.floor(now()/86400000);if(inv.ch===D0)return toast('Bugünkü sandığı zaten açtın');inv.ch=D0;const r0=Math.random();let m0;if(r0<.55){const c0=5+Math.floor(Math.random()*16);inv.coins+=c0;m0=c0+'🪙'}else if(r0<.9){const it=['wheat','carrot','egg','milk'][Math.random()*4|0],q0=1+Math.floor(Math.random()*3);add(it,q0);m0=q0+' '+NAME[it]}else{inv.coins+=50;m0='50🪙 (süper!)'}pop('🎁');snd(800);save();toast('🎁 Sandıktan çıktı: '+m0);return}
   if(a==='gclaim'){const q=qget();if(q.g||(gr.n||0)<GN||!(gr.c&&gr.c[uid]))return;q.g=1;inv.coins+=25;gain(15);pop('+25🪙');save();toast('Köy ambarı ödülü alındı!')}
   if(a==='order'){const o=orders()[+k],q=qget();if(!o||(q.o>>k&1))return;if(have(o.k)<o.q)return toast(o.q+' '+NAME[o.k]+' gerekir');add(o.k,-o.q);inv.coins+=o.r;q.o=(q.o||0)|(1<<k);gain(8);pop('+'+o.r+'🪙');ach('sell');save()}
@@ -906,7 +913,7 @@ bmc.addEventListener('click',e=>{const r=bmc.getBoundingClientRect();goTo(Math.f
 setTimeout(()=>toast('🗺️ Mini haritaya dokunarak istediğin yere gidebilirsin'),5000);
 
 let zoom=1,pd=0,yaw=0;
-for(const [id,k] of [['rl','q'],['rr','f']]){const el=$(id);el.addEventListener('pointerdown',()=>keys[k]=true);for(const ev of['pointerup','pointerleave','pointercancel'])el.addEventListener(ev,()=>keys[k]=false)}
+for(const [id,k] of [['rl','q'],['rr','e']]){const el=$(id);el.addEventListener('pointerdown',()=>keys[k]=true);for(const ev of['pointerup','pointerleave','pointercancel'])el.addEventListener(ev,()=>keys[k]=false)}
 addEventListener('wheel',e=>{if(e.target===ren.domElement)zoom=Math.max(.6,Math.min(2,zoom+e.deltaY*.001))},{passive:true});
 ren.domElement.addEventListener('touchmove',e=>{if(e.touches.length===2){const d=Math.hypot(e.touches[0].clientX-e.touches[1].clientX,e.touches[0].clientY-e.touches[1].clientY);if(pd)zoom=Math.max(.6,Math.min(2,zoom*pd/d));pd=d}},{passive:true});
 ren.domElement.addEventListener('touchend',()=>pd=0);
@@ -973,7 +980,7 @@ function loop(){
   requestAnimationFrame(loop);
   const dt=Math.min(clock.getDelta(),.1);
   let dx=(keys.d||keys.arrowright?1:0)-(keys.a||keys.arrowleft?1:0),dz=(keys.s||keys.arrowdown?1:0)-(keys.w||keys.arrowup?1:0);
-  dx+=jx;dz+=jz;yaw+=((keys.f?1:0)-(keys.q?1:0))*1.8*dt;{const c=Math.cos(yaw),sn2=Math.sin(yaw),a=dx,b=dz;dx=a*c+b*sn2;dz=-a*sn2+b*c}if(Math.abs(dx)+Math.abs(dz)>.1){const l=Math.hypot(dx,dz);const nx=Math.max(0,Math.min(N-1,me.x+dx/l*5*dt)),nz=Math.max(0,Math.min(N-1,me.z+dz/l*5*dt)),W=(a,b)=>isW(tiles[Math.round(a)+'_'+Math.round(b)]),stuck=W(me.x,me.z);
+  dx+=jx;dz+=jz;yaw+=((keys.e?1:0)-(keys.q?1:0))*1.8*dt;{const c=Math.cos(yaw),sn2=Math.sin(yaw),a=dx,b=dz;dx=a*c+b*sn2;dz=-a*sn2+b*c}if(Math.abs(dx)+Math.abs(dz)>.1){const l=Math.hypot(dx,dz);const nx=Math.max(0,Math.min(N-1,me.x+dx/l*5*dt)),nz=Math.max(0,Math.min(N-1,me.z+dz/l*5*dt)),W=(a,b)=>isW(tiles[Math.round(a)+'_'+Math.round(b)]),stuck=W(me.x,me.z);
     if(stuck||!W(nx,me.z))me.x=nx;if(stuck||!W(me.x,nz))me.z=nz;meMesh.rotation.y=Math.atan2(dx,dz)}
   meMesh.position.set(me.x,0,me.z);
   for(const o of Object.values(others)){o.m.position.x+=(o.tx-o.m.position.x)*.2;o.m.position.z+=(o.tz-o.m.position.z)*.2}
@@ -1053,6 +1060,7 @@ function xApply(){
   const row=document.createElement('div');row.id='xrow';document.body.appendChild(row);
   const mk=(id,txt,fn,tt)=>{const e=document.createElement('div');e.id=id;e.className='box';e.textContent=txt;if(tt)e.title=tt;if(fn)e.onclick=fn;row.appendChild(e);return e};
   row.appendChild($('mus'));
+  mk('mn','🏠 Ana menü',async()=>{if(!confirm('Ana menüye dönmek istediğine emin misin?'))return;try{save()}catch(e){}await new Promise(r=>setTimeout(r,400));try{localStorage.removeItem('lm')}catch(e){}location.reload()},'Ana menüye dön (harita seçimi)');
   mk('lo','🚪 Çıkış',async()=>{if(!confirm('Hesaptan çıkmak istediğine emin misin?'))return;try{await signOut(auth)}catch(e){}try{localStorage.removeItem('lm')}catch(e){}location.reload()},'Hesaptan çık');
   mk('cf','⚙️ Ayar',()=>XOPEN('cfg'),'Ayarlar (O)');
   mk('sv','☁️',null,'Kayıt durumu');
@@ -1090,7 +1098,7 @@ function XCFG(R,B){
   c+=`<div class="form"><select id="xc_ac">${COPT(['Aksesuar yok','Gözlük','Atkı','Sırt çantası','Pelerin','Halka'],L.ac||0)}</select>${B('x_look',null,'Uygula')}</div>`;
   c+='<h4>👤 Hesap</h4>'+R('🧑‍🌾',esc(myName),auth.currentUser.email?'Kullanıcı hesabı':'Misafir hesap');
   if(auth.currentUser.email)c+=`<div class="form"><input id="pw0" type="password" placeholder="Mevcut şifre" autocomplete="current-password"><input id="pw1" type="password" placeholder="Yeni şifre (en az 6)" autocomplete="new-password"><input id="pw2" type="password" placeholder="Yeni şifre tekrar" autocomplete="new-password">${B('x_pw',null,'Şifreyi değiştir')}</div><div class="note">Şifreni unutursan sıfırlanamaz (hesapta gerçek e-posta yok), güvenli bir yere not et.</div>`;
-  c+='<button class="wide" data-a="x_tut">📖 Rehberi tekrar göster</button><button class="wide" data-a="logout">🚪 Çıkış yap</button>';
+  c+='<button class="wide" data-a="x_tut">📖 Rehberi tekrar göster</button><div class="form" style="gap:8px;margin-top:10px"><button class="wide" style="margin-top:0!important" data-a="maps">🏠 Ana menüye dön</button><button class="wide" style="margin-top:0!important" data-a="logout">🚪 Çıkış yap</button></div>';
   return c;
 }
 
