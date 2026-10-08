@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="tr"><head><meta charset="utf-8">
+<html lang="tr"><head><meta charset="utf-8"><meta name="theme-color" content="#9ad4f5"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes">
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover">
 <meta name="theme-color" content="#3a2716"><meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-capable" content="yes">
 <title>Çiftlik Dünyası</title>
@@ -158,6 +158,7 @@ button,.slot,.box{touch-action:manipulation}
 #lbox .lrow{display:flex;gap:8px;align-items:center}#lbox .lrow>input{flex:1;min-width:0}#lbox .rm{display:flex;align-items:center;gap:5px;font-size:13px;font-weight:600;color:#3a2716;cursor:pointer;white-space:nowrap;user-select:none}#lbox .rm input{width:20px;height:20px;padding:0;flex:none;accent-color:#f0ae1c;cursor:pointer}
 #net{top:50px;left:50%;transform:translateX(-50%);background:#b00020;display:none;z-index:60;font-weight:600}
 body.photo .box,body.photo #joy,body.photo #xrow,body.photo #bar,body.photo #mm,body.photo #rl,body.photo #rr,body.photo #undo,body.photo #rot,body.photo #back{display:none!important}
+#kmd{position:fixed;inset:0;z-index:80;background:rgba(0,0,0,.5);display:flex;align-items:center;justify-content:center}#kmd .kb{background:#fff4d9;color:#3a2716;border-radius:16px;padding:14px;width:min(340px,92vw);max-height:86vh;overflow:auto;display:flex;flex-direction:column;gap:6px;font-family:inherit}#kmd .kr{display:flex;justify-content:space-between;align-items:center;gap:8px}#kmd button{border:0;border-radius:10px;padding:8px 12px;font-weight:600;background:linear-gradient(#ffd966,#f0ae1c);color:#4a2e08;cursor:pointer;min-width:70px}
 #phx{position:fixed;right:10px;bottom:10px;z-index:61;display:none;width:44px;height:44px;border-radius:50%;background:rgba(20,20,20,.55);color:#fff;font-size:20px;align-items:center;justify-content:center;cursor:pointer}
 body.photo #phx{display:flex}
 #lgo{padding:12px;font-size:17px}#lgo:disabled{opacity:.6}
@@ -1075,6 +1076,32 @@ function xApply(){
   const net=document.createElement('div');net.id='net';net.className='box';net.textContent='⚠️ Bağlantı koptu, değişiklikler kaydedilmiyor';document.body.appendChild(net);
   {let was=false;onValue(ref(db,'.info/connected'),sn=>{if(sn.val()){was=true;net.style.display='none'}else if(was)net.style.display='block'})}
   addEventListener('offline',()=>{net.style.display='block'});
+  // PWA
+  try{const cv=document.createElement('canvas');cv.width=cv.height=512;const g=cv.getContext('2d');g.fillStyle='#9bd16b';g.fillRect(0,0,512,512);g.font='340px serif';g.textAlign='center';g.textBaseline='middle';g.fillText('🌾',256,280);
+    const mf={name:'Çiftlik Dünyası',short_name:'Çiftlik',start_url:location.href.split('#')[0],display:'fullscreen',background_color:'#9ad4f5',theme_color:'#9ad4f5',icons:[{src:cv.toDataURL('image/png'),sizes:'512x512',type:'image/png',purpose:'any'}]};
+    const l=document.createElement('link');l.rel='manifest';l.href=URL.createObjectURL(new Blob([JSON.stringify(mf)],{type:'application/manifest+json'}));document.head.appendChild(l);
+    if('serviceWorker' in navigator&&location.protocol==='https:')navigator.serviceWorker.register('sw.js').catch(()=>{})}catch(e){}
+  // tuş ayarları
+  const KA=[['tools','Alet menüsü','f'],['camL','Kamera sola','q'],['camR','Kamera sağa','e'],['shop','Dükkan','b'],['map','Harita','m'],['rot','Çevir','g'],['undo','Geri al','u'],['claim','Parsel al','k']];
+  let KM={};try{KM=JSON.parse(localStorage.getItem('km'))||{}}catch(e){}
+  const kmSave=()=>{try{localStorage.setItem('km',JSON.stringify(KM))}catch(e){}};
+  const kmBuild=()=>{const cm={},bl=new Set();for(const [a,,d] of KA){const c=KM[a];if(c&&c!==d){cm[c]=d;bl.add(d)}}return{cm,bl}};
+  let KB=kmBuild();
+  const kre=(e,t)=>{if(!e.isTrusted||e.target.tagName==='INPUT'||e.ctrlKey||e.metaKey||e.altKey||e.key.length!==1)return;const k=e.key.toLowerCase(),d=KB.cm[k];
+    if(d){e.stopImmediatePropagation();e.preventDefault();dispatchEvent(new KeyboardEvent(t,{key:d,repeat:e.repeat,bubbles:true}))}
+    else if(KB.bl.has(k)){e.stopImmediatePropagation()}};
+  addEventListener('keydown',e=>kre(e,'keydown'),true);addEventListener('keyup',e=>kre(e,'keyup'),true);
+  const kmOpen=()=>{const d=document.createElement('div');d.id='kmd';let wait=null;
+    const draw=()=>{d.innerHTML='<div class="kb"><b>⌨️ Tuş ayarları</b>'+KA.map(([a,n,df])=>`<div class="kr"><span>${n}</span><button data-a="${a}">${wait===a?'Bir tuşa bas...':(KM[a]||df).toUpperCase()}</button></div>`).join('')+'<div class="kr"><button data-a="_reset">Sıfırla</button><button data-a="_close">Kapat</button></div></div>'};
+    const fin=()=>{removeEventListener('keydown',cap,true);d.remove()};
+    const cap=e=>{if(!wait)return;e.preventDefault();e.stopImmediatePropagation();if(e.key==='Escape'){wait=null;draw();return}if(e.key.length!==1)return;const k=e.key.toLowerCase();
+      if('0123456789zxcvhopadws'.includes(k)){toast('Bu tuş ayrılmış: '+k.toUpperCase());return}
+      for(const [a,,df] of KA)if(a!==wait&&(KM[a]||df)===k){KM[a]=KM[wait]||KA.find(x=>x[0]===wait)[2]}
+      KM[wait]=k;wait=null;kmSave();KB=kmBuild();draw()};
+    addEventListener('keydown',cap,true);
+    d.onclick=e=>{const b=e.target.closest('button');if(e.target===d)return fin();if(!b)return;const a=b.dataset.a;if(a==='_close')return fin();if(a==='_reset'){KM={};kmSave();KB=kmBuild();wait=null;return draw()}wait=a;draw()};
+    document.body.appendChild(d);draw()};
+  mk('km','⌨️ Tuşlar',kmOpen,'Tuş ayarları');
   // fotoğraf modu
   const phx=document.createElement('div');phx.id='phx';phx.textContent='📷';phx.title='Arayüzü geri getir (H)';document.body.appendChild(phx);
   const photo=on=>{document.body.classList.toggle('photo',on===undefined?!document.body.classList.contains('photo'):on);if(document.body.classList.contains('photo'))try{closeChat();closeMap();closeTools();panel.style.display='none'}catch(e){}};
