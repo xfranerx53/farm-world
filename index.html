@@ -77,6 +77,8 @@ button,.slot,.box{touch-action:manipulation}
 #toast{z-index:45;pointer-events:none;max-width:90vw;text-align:center}
 #panel{z-index:30}
 #mm{cursor:pointer}
+#lo{top:84px;left:122px;cursor:pointer;font-size:13px;user-select:none;z-index:15}#lo:active{transform:scale(.96)}
+@media (pointer:coarse),(max-width:700px){#lo{top:calc(var(--sa,0px) + 88px)!important;left:112px!important;font-size:12px!important;padding:5px 10px;min-height:32px;display:flex;align-items:center}}
 /* sohbet kutusu (küçük önizleme) */
 #chatw{cursor:pointer;width:260px;padding:8px 10px}
 #log{max-height:none;overflow:hidden;margin-bottom:6px;pointer-events:none}
@@ -230,7 +232,7 @@ button,.slot,.box{touch-action:manipulation}
 <div id="bm" class="box"><div class="ch"><b>🗺️ Harita</b><button id="bmx" class="cx" title="Kapat (Esc)">✕</button></div>
 <canvas id="bmc" width="400" height="400"></canvas>
 <div class="bmf"><span>Gitmek istediğin yere dokun</span><button id="bmh">🏡 Parselim</button></div></div>
-<canvas id="mm" class="box" width="96" height="96" title="Haritayı aç"></canvas><div id="undo" class="box">↩ Geri al</div><div id="rot" class="box">🔄 Çevir</div><div id="rl" class="box cam">⟲</div><div id="rr" class="box cam">⟳</div><div id="back" class="box">↩ Geri dön</div><div id="mus" class="box" style="top:84px;left:10px;cursor:pointer;font-size:13px">🔇 Müzik</div>
+<canvas id="mm" class="box" width="96" height="96" title="Haritayı aç"></canvas><div id="undo" class="box">↩ Geri al</div><div id="rot" class="box">🔄 Çevir</div><div id="rl" class="box cam">⟲</div><div id="rr" class="box cam">⟳</div><div id="back" class="box">↩ Geri dön</div><div id="mus" class="box" style="top:84px;left:10px;cursor:pointer;font-size:13px">🔇 Müzik</div><div id="lo" class="box" title="Hesaptan çık">🚪 Çıkış</div>
 
 <script type="module">
 import * as THREE from 'three';
@@ -677,6 +679,7 @@ function craftItem(k,n){const R=RC[k];if(!Object.values(objs).some(o=>o.userData
   if(!c)return toast('Malzeme yetersiz');save();toast('🏭 '+NAME[k]+' ×'+c+' üretildi')}
 function togglePanel(){facOpen=false;closeChat();closeMap();closeTools();panel.style.display=panel.style.display==='block'?'none':'block';renderPanel()}
 $('open').onclick=togglePanel;
+$('lo').onclick=async()=>{if(!confirm('Hesaptan çıkmak istediğine emin misin?'))return;try{await signOut(auth)}catch(e){}try{localStorage.removeItem('lm')}catch(e){}location.reload()};
 onValue(mref('market'),s=>{market=s.val()||{};if(document.activeElement.tagName!=='INPUT')renderPanel()});
 let ptab='buy',facOpen=false;
 const EMO={potato:'🥔',duckegg:'🥚',chips:'🍟',butter:'🧈',sweater:'🧥',wheat:'🌾',carrot:'🥕',tomato:'🍅',corn:'🌽',egg:'🥚',milk:'🥛',apple:'🍎',flour:'🌾',bread:'🍞',cheese:'🧀',strawberry:'🍓',pumpkin:'🎃',wool:'🧶',jam:'🍯',pie:'🥧',fish:'🐟',trout:'🐟',goldfish:'🐠'};
