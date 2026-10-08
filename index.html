@@ -157,10 +157,6 @@ button,.slot,.box{touch-action:manipulation}
 #lbox .lt{display:flex;gap:6px}#lbox .lt button{flex:1;padding:9px;background:#e8dcb5;color:#6a5a30;box-shadow:none;font-size:14px}#lbox .lt button.on{background:linear-gradient(#ffd966,#f0ae1c);color:#4a2e08}
 #lbox .lrow{display:flex;gap:8px;align-items:center}#lbox .lrow>input{flex:1;min-width:0}#lbox .rm{display:flex;align-items:center;gap:5px;font-size:13px;font-weight:600;color:#3a2716;cursor:pointer;white-space:nowrap;user-select:none}#lbox .rm input{width:20px;height:20px;padding:0;flex:none;accent-color:#f0ae1c;cursor:pointer}
 #net{top:50px;left:50%;transform:translateX(-50%);background:#b00020;display:none;z-index:60;font-weight:600}
-body.photo .box,body.photo #joy,body.photo #xrow,body.photo #bar,body.photo #mm,body.photo #rl,body.photo #rr,body.photo #undo,body.photo #rot,body.photo #back{display:none!important}
-#kmd{position:fixed;inset:0;z-index:80;background:rgba(0,0,0,.5);display:flex;align-items:center;justify-content:center}#kmd .kb{background:#fff4d9;color:#3a2716;border-radius:16px;padding:14px;width:min(340px,92vw);max-height:86vh;overflow:auto;display:flex;flex-direction:column;gap:6px;font-family:inherit}#kmd .kr{display:flex;justify-content:space-between;align-items:center;gap:8px}#kmd button{border:0;border-radius:10px;padding:8px 12px;font-weight:600;background:linear-gradient(#ffd966,#f0ae1c);color:#4a2e08;cursor:pointer;min-width:70px}
-#phx{position:fixed;right:10px;bottom:10px;z-index:61;display:none;width:44px;height:44px;border-radius:50%;background:rgba(20,20,20,.55);color:#fff;font-size:20px;align-items:center;justify-content:center;cursor:pointer}
-body.photo #phx{display:flex}
 #lgo{padding:12px;font-size:17px}#lgo:disabled{opacity:.6}
 #lerr{min-height:18px;color:#b00020;font-size:13px;font-weight:500}
 #lg .lo{font-size:13px;color:#3a2716;opacity:.7}#lg .lr{display:flex;gap:8px;flex-wrap:wrap;justify-content:center}#lg .lr button{padding:9px 16px;font-size:14px}
@@ -231,7 +227,7 @@ body.jl #joy{right:auto!important;left:14px}
 </head><body>
 <div id="stats" class="box"></div>
 <div id="open" class="box" title="Dükkan & Pazar (B)">🏪 Dükkan</div>
-<div id="help" class="box">WASD / ok tuşları: yürü<br>1-9, 0: alet seç · Tıkla: kullan<br>F: aletler · Enter: sohbet · M: harita<br>Çitli alana her şey konur<br>T: taşı · R: kaldır · G: çevir · U/Ctrl+Z: geri al<br>Çit/yol: basılı tutup sürükle<br>Z X C V: 👋 ❤️ 😂 👍 · Q E: kamera<br><b>sürüm 30<br><span id="wx"></span></b></div>
+<div id="help" class="box">WASD / ok tuşları: yürü<br>1-9, 0: alet seç · Tıkla: kullan<br>F: aletler · Enter: sohbet · M: harita<br>T: taşı · R: kaldır · G: çevir · U/Ctrl+Z: geri al<br>Çit/yol: basılı tutup sürükle<br>Z X C V: 👋 ❤️ 😂 👍 · Q E: kamera<br><b>sürüm 30<br><span id="wx"></span></b></div>
 <div id="bar" class="box"></div>
 <div id="chatw" class="box"><div id="log"></div><div id="copen">💬 Sohbet <small style="opacity:.7;font-weight:400">(Enter)</small><i id="cbadge"></i></div></div>
 <div id="claim" class="box" style="top:50px;left:50%;transform:translateX(-50%);cursor:pointer" title="Parsel al (K)">🏡 Parsel al</div>
@@ -252,7 +248,7 @@ body.jl #joy{right:auto!important;left:14px}
 <div id="tp" class="box"></div>
 <div id="bm" class="box"><div class="ch"><b>🗺️ Harita</b><button id="bmx" class="cx" title="Kapat (Esc)">✕</button></div>
 <canvas id="bmc" width="400" height="400"></canvas>
-<div class="bmf"><span>Gitmek istediğin yere dokun</span><button id="bmh">🏡 Parselim</button></div></div>
+<div class="bmf"><span>Harita</span><button id="bmh">🏡 Parselim</button></div></div>
 <canvas id="mm" class="box" width="96" height="96" title="Haritayı aç"></canvas><div id="undo" class="box">↩ Geri al</div><div id="rot" class="box">🔄 Çevir</div><div id="rl" class="box cam">⟲</div><div id="rr" class="box cam">⟳</div><div id="back" class="box">↩ Geri dön</div><div id="mus" class="box" style="top:84px;left:10px;cursor:pointer;font-size:13px">🔇 Müzik</div>
 
 <script type="module">
@@ -659,7 +655,7 @@ function act(x,z,okey,sk,sd){clearGhost();XTAP(x,z);if(XACT(x,z))return;
   if(tool==='hand'||tool==='feed'||tool==='tag')for(const k in objs){const o=objs[k];if(ANIM[o.userData.s]&&Math.hypot(o.position.x-x,o.position.z-z)<1.4){key=k;break}}
   if(tool==='hand')for(const id in drops){const g=drops[id];if(Math.hypot(g.userData.x-x,g.userData.z-z)<1){key=g.userData.key;break}}
   if(tool==='hand'&&!tiles[key])for(const k in objs){const o=objs[k];if(o.userData.s==='factory'&&Math.hypot(o.position.x-x,o.position.z-z)<1.3){key=k;break}}
-  const d=tiles[key],r=mref('world/'+key),zn=zoneAt(x,z);
+  const d=tiles[key],r=mref('world/'+key),zn=zoneAt(x,z)||'field';
   if(tool==='hand'){
     if(!d)return;
     if(d.s==='crop'){
@@ -898,7 +894,7 @@ onValue(query(mref('chat'),limitToLast(30)),s=>{
   E.slice().reverse().forEach(([,m])=>{const d=document.createElement('div'),b=document.createElement('b');b.textContent=m.n+': ';d.appendChild(b);d.appendChild(document.createTextNode(m.m));cl.appendChild(d)});
   const la=E[E.length-1];if(la){if(lastChat&&la[0]!==lastChat){bubble(la[1]);if(!cpOpen()&&la[1].n!==myName){unread++;badge()}}lastChat=la[0]}
 });
-// ---- Harita (mini haritaya bas → büyük harita → dokun, oraya git) ----
+// ---- Harita (mini haritaya bas → büyük harita) ----
 const bm=$('bm'),bmc=$('bmc');bmc.width=bmc.height=N*5;const bg=bmc.getContext('2d'),BS=5;
 const bmOpen=()=>bm.style.display==='block';
 function openMap(){panel.style.display='none';closeChat();closeTools();bm.style.display='block';drawBig()}
@@ -914,8 +910,6 @@ function drawBig(){const g=bg;
   g.fillStyle='#e33';g.strokeStyle='#fff';g.lineWidth=2;g.beginPath();g.arc((me.x+.5)*BS,(me.z+.5)*BS,7,0,7);g.fill();g.stroke()}
 $('mm').onclick=openMap;$('bmx').onclick=closeMap;
 $('bmh').onclick=()=>{const L=myPs();if(!L.length)return toast('Henüz parselin yok (🏡 Parsel al)');const i=+L[(homeI++)%L.length][0];goTo(pcen(i)[0],pcen(i)[1])};
-bmc.addEventListener('click',e=>{const r=bmc.getBoundingClientRect();goTo(Math.floor((e.clientX-r.left)/r.width*N),Math.floor((e.clientY-r.top)/r.height*N))});
-setTimeout(()=>toast('🗺️ Mini haritaya dokunarak istediğin yere gidebilirsin'),5000);
 
 let zoom=1,pd=0,yaw=0;
 for(const [id,k] of [['rl','q'],['rr','e']]){const el=$(id);el.addEventListener('pointerdown',()=>keys[k]=true);for(const ev of['pointerup','pointerleave','pointercancel'])el.addEventListener(ev,()=>keys[k]=false)}
@@ -1037,7 +1031,7 @@ ren.domElement.addEventListener('pointerleave',()=>{lastHov=null});
 function migrate(){for(const k in tiles){const t=tiles[k];if(t.gh||t.u!==undefined)continue;const [x,z]=k.split('_').map(Number),P=parcels[pid(x,z)];if(P&&P.u===uid)set(mref('world/'+k),t)}}
 setTimeout(migrate,8000);setTimeout(migrate,40000);
 // ilk giriş rehberi
-const TUT=["👋 Hoş geldin! Önce 🏡 Parsel al ile ilk (ücretsiz) arazini al.","🪵 Tarla ve hayvan alanı çitle çevrilir. Çit seçip basılı sürükleyerek hızlıca çekebilirsin; 🚪 Kapı da aynı şekilde.","⛏️ Çapa ile tarlada toprağı aç, 🌾 tohum ek, 💧 kovayla sula.","✋ El ile olgun ekini hasat et, 🏪 Dükkan'dan sat. Aynı ürünü çok satarsan fiyatı düşer, çeşitlendir!","🔄 Çevir (G), ↩ Geri al (U / Ctrl+Z), 📦 Taşı (T), 🧹 Kaldır (R) ile düzenle. Kolay gelsin!"];
+const TUT=["👋 Hoş geldin! Önce 🏡 Parsel al ile ilk (ücretsiz) arazini al.","🪵 İstersen alanını çitle çevirebilirsin (zorunlu değil). Çit seçip basılı sürükleyerek hızlıca çekebilirsin; 🚪 Kapı da aynı şekilde.","⛏️ Çapa ile tarlada toprağı aç, 🌾 tohum ek, 💧 kovayla sula.","✋ El ile olgun ekini hasat et, 🏪 Dükkan'dan sat. Aynı ürünü çok satarsan fiyatı düşer, çeşitlendir!","🔄 Çevir (G), ↩ Geri al (U / Ctrl+Z), 📦 Taşı (T), 🧹 Kaldır (R) ile düzenle. Kolay gelsin!"];
 function showTut(i){let t=$('tut');if(!t){t=document.createElement('div');t.id='tut';t.className='box';document.body.appendChild(t)}
   if(i>=TUT.length){t.remove();inv.tut=1;save();return}
   t.innerHTML='<div>'+TUT[i]+'</div><div class="tb"><button id="tn">'+(i<TUT.length-1?'Sonraki ('+(i+1)+'/'+TUT.length+')':'Bitir')+'</button><button id="ts">Geç</button></div>';
@@ -1071,7 +1065,7 @@ function xApply(){
   mk('sv','☁️',null,'Kayıt durumu');
   const xt=document.createElement('div');xt.id='xt';xt.className='box';document.body.appendChild(xt);
   const tp=document.createElement('div');tp.id='xtip';tp.className='box';document.body.appendChild(tp);
-  $('help').innerHTML+='<br>O: ayarlar · P: köy (proje, takas, lonca) · H: fotoğraf modu';
+  $('help').innerHTML+='<br>O: ayarlar · P: köy (proje, takas, lonca)';
   // bağlantı uyarısı
   const net=document.createElement('div');net.id='net';net.className='box';net.textContent='⚠️ Bağlantı koptu, değişiklikler kaydedilmiyor';document.body.appendChild(net);
   {let was=false;onValue(ref(db,'.info/connected'),sn=>{if(sn.val()){was=true;net.style.display='none'}else if(was)net.style.display='block'})}
@@ -1099,12 +1093,6 @@ function xApply(){
     d.onclick=e=>{const b=e.target.closest('button');if(e.target===d)return fin();if(!b)return;const a=b.dataset.a;if(a==='_close')return fin();if(a==='_reset'){KM={};kmSave();KB=kmBuild();wait=null;return draw()}wait=a;draw()};
     document.body.appendChild(d);draw()};
   mk('km','⌨️ Tuşlar',kmOpen,'Tuş ayarları');
-  // fotoğraf modu
-  const phx=document.createElement('div');phx.id='phx';phx.textContent='📷';phx.title='Arayüzü geri getir (H)';document.body.appendChild(phx);
-  const photo=on=>{document.body.classList.toggle('photo',on===undefined?!document.body.classList.contains('photo'):on);if(document.body.classList.contains('photo'))try{closeChat();closeMap();closeTools();panel.style.display='none'}catch(e){}};
-  phx.onclick=()=>photo(false);
-  mk('ph','📷 Foto',()=>photo(true),'Fotoğraf modu (H)');
-  addEventListener('keydown',e=>{if(e.target.tagName==='INPUT'||e.repeat||e.ctrlKey||e.metaKey)return;if(e.key==='h'||e.key==='H')photo();else if(e.key==='Escape')photo(false)});
 }
 function XOPEN(t){
   if(!t||(panel.style.display==='block'&&ptab===t&&!facOpen)){panel.style.display='none';return}
