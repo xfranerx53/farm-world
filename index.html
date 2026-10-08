@@ -18,11 +18,16 @@ canvas{display:block}
 #toast{top:60px;left:50%;transform:translateX(-50%);display:none}
 #open{top:10px;left:50%;transform:translateX(-50%);cursor:pointer}
 </style>
+<script>
+function showErr(m){var d=document.getElementById('err');if(!d){d=document.createElement('div');d.id='err';d.style.cssText='position:fixed;top:90px;left:10px;right:10px;background:#b00020;color:#fff;padding:10px;border-radius:8px;z-index:99;font:13px monospace;white-space:pre-wrap';document.body.appendChild(d)}d.textContent+=m+'\n'}
+addEventListener('error',function(e){showErr('HATA: '+(e.message||e.target&&e.target.src))});
+addEventListener('unhandledrejection',function(e){showErr('HATA: '+(e.reason&&(e.reason.code||e.reason.message)||e.reason))});
+</script>
 <script type="importmap">{"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js"}}</script>
 </head><body>
 <div id="stats" class="box"></div>
 <div id="open" class="box">🏪 Dükkan & Pazar (B)</div>
-<div id="help" class="box">WASD / ok tuşları: yürü<br>1-5: alet seç · Tıkla: kullan<br>Enter: sohbet</div>
+<div id="help" class="box">WASD / ok tuşları: yürü<br>1-5: alet seç · Tıkla: kullan<br>Enter: sohbet<br><b>sürüm 2</b></div>
 <div id="bar" class="box"></div>
 <div id="chatw" class="box"><div id="log"></div><input id="chat" placeholder="Enter ile yaz..." maxlength="120"></div>
 <div id="panel" class="box"></div>
