@@ -60,7 +60,7 @@ body,.box,input,select,button{font-family:'Fredoka',system-ui,sans-serif}
 #lg button{font-family:inherit;font-weight:600;border:0;border-radius:14px;background:linear-gradient(#ffd966,#f0ae1c);color:#4a2e08;box-shadow:0 4px 0 #9a6a08;cursor:pointer}
 #lg #bs{background:#fff4d9;box-shadow:0 3px 0 #b9a77e}
 .pop{position:fixed;left:50%;top:46%;pointer-events:none;z-index:40;color:#ffe58a;font-weight:600;font-size:20px;text-shadow:0 2px 0 #4a2e08,0 0 8px rgba(0,0,0,.4);animation:pop 1s ease-out forwards}@keyframes pop{from{transform:translate(-50%,0)}to{transform:translate(-50%,-80px);opacity:0}}
-#mm{top:128px;right:10px;width:120px;height:120px;padding:0;image-rendering:pixelated}@media (pointer:coarse){#mm{top:110px;width:90px;height:90px}}
+#mm{top:215px;right:10px;width:120px;height:120px;padding:0;image-rendering:pixelated}@media (pointer:coarse){#mm{top:110px;width:90px;height:90px}}
 .cam{display:none;bottom:214px;font-size:24px;padding:4px 14px;user-select:none;touch-action:none}#rl{right:68px}#rr{right:14px}@media (pointer:coarse){.cam{display:block}}
 #panel .x{position:sticky;top:0;float:right;z-index:5;width:36px;height:36px;border-radius:50%!important;background:#e0533a!important;color:#fff!important;font-size:17px;padding:0!important;margin:0 0 0 8px!important;box-shadow:0 3px 0 #8a2a18!important}
 #back{top:122px;left:10px;cursor:pointer;font-weight:600;background:linear-gradient(#9be072,#55b03a);color:#12340a;display:none}
@@ -151,6 +151,13 @@ button,.slot,.box{touch-action:manipulation}
 #tp .c:active{transform:scale(.96)}
 .slot.menu{background:linear-gradient(#ffd966,#f0ae1c);color:#4a2e08;font-weight:600;min-width:74px!important}
 #claim span{text-align:center;line-height:1.15}#claim small{display:block;font-size:11px;opacity:.85}
+#lbox{width:min(360px,92vw);background:rgba(255,244,217,.93);border-radius:18px;padding:14px;box-shadow:0 6px 0 rgba(0,0,0,.15);display:flex;flex-direction:column;gap:8px}
+#lbox input{border:2px solid #e0cfa0;border-radius:10px;padding:11px 12px;font-size:16px;font-family:inherit;color:#3a2716;background:#fff;outline:0;width:100%}
+#lbox input:focus{border-color:#f0ae1c}
+#lbox .lt{display:flex;gap:6px}#lbox .lt button{flex:1;padding:9px;background:#e8dcb5;color:#6a5a30;box-shadow:none;font-size:14px}#lbox .lt button.on{background:linear-gradient(#ffd966,#f0ae1c);color:#4a2e08}
+#lgo{padding:12px;font-size:17px}#lgo:disabled{opacity:.6}
+#lerr{min-height:18px;color:#b00020;font-size:13px;font-weight:500}
+#lg .lo{font-size:13px;color:#3a2716;opacity:.7}#lg .lr{display:flex;gap:8px;flex-wrap:wrap;justify-content:center}#lg .lr button{padding:9px 16px;font-size:14px}
 /* ===== telefon / dar ekran / dokunmatik ===== */
 @media (max-width:700px),(pointer:coarse){
  :root{--sa:env(safe-area-inset-top,0px);--sb:env(safe-area-inset-bottom,0px)}
@@ -184,11 +191,17 @@ button,.slot,.box{touch-action:manipulation}
 </head><body>
 <div id="stats" class="box"></div>
 <div id="open" class="box" title="Dükkan & Pazar (B)">🏪 Dükkan</div>
-<div id="help" class="box">WASD / ok tuşları: yürü<br>1-9, 0: alet seç · Tıkla: kullan<br>E: aletler · Enter: sohbet · M: harita<br>Çitli alana her şey konur<br>T: taşı · R: kaldır<br>Z X C V: 👋 ❤️ 😂 👍 · Q F: kamera<br><b>sürüm 27<br><span id="wx"></span></b></div>
+<div id="help" class="box">WASD / ok tuşları: yürü<br>1-9, 0: alet seç · Tıkla: kullan<br>E: aletler · Enter: sohbet · M: harita<br>Çitli alana her şey konur<br>T: taşı · R: kaldır<br>Z X C V: 👋 ❤️ 😂 👍 · Q F: kamera<br><b>sürüm 29<br><span id="wx"></span></b></div>
 <div id="bar" class="box"></div>
 <div id="chatw" class="box"><div id="log"></div><div id="copen">💬 Sohbet <small style="opacity:.7;font-weight:400">(Enter)</small><i id="cbadge"></i></div></div>
 <div id="claim" class="box" style="top:50px;left:50%;transform:translateX(-50%);cursor:pointer" title="Parsel al (K)">🏡 Parsel al</div>
-<div id="lg" style="position:fixed;inset:0;background:#9ad4f5;display:none;z-index:50;align-items:center;justify-content:center;flex-direction:column;gap:14px"><b style="font-size:30px">🌾 Çiftlik Dünyası</b><button id="bg" style="padding:12px 26px;font-size:16px">Google ile giriş</button><button id="bs" style="padding:8px 18px">Misafir gir (veri kaybolabilir)</button></div>
+<div id="lg" style="position:fixed;inset:0;background:#9ad4f5;display:none;z-index:50;align-items:center;justify-content:center;flex-direction:column;gap:12px;padding:16px;overflow:auto"><b style="font-size:30px">🌾 Çiftlik Dünyası</b>
+<div id="lbox"><div class="lt"><button id="ltl" class="on">Giriş yap</button><button id="ltc">Hesap oluştur</button></div>
+<input id="lu" placeholder="Kullanıcı adı" maxlength="14" autocomplete="username" autocapitalize="none" spellcheck="false">
+<input id="lp" type="password" placeholder="Şifre (en az 6 karakter)" autocomplete="current-password">
+<input id="lp2" type="password" placeholder="Şifre tekrar" autocomplete="new-password" style="display:none">
+<div id="lerr"></div><button id="lgo">Giriş yap</button></div>
+</div>
 <div id="joy"><div id="knob"></div></div>
 <div id="panel" class="box"></div>
 <div id="toast" class="box"></div>
@@ -205,7 +218,7 @@ button,.slot,.box{touch-action:manipulation}
 <script type="module">
 import * as THREE from 'three';
 import {initializeApp} from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js';
-import {getAuth, signInAnonymously, signInWithPopup, GoogleAuthProvider, signOut} from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js';
+import {getAuth, signInAnonymously, signInWithPopup, GoogleAuthProvider, signOut, createUserWithEmailAndPassword, signInWithEmailAndPassword, updateProfile} from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js';
 import {getDatabase, ref, set, get, remove, push, onValue, onChildAdded, onChildChanged, onChildRemoved, onDisconnect, runTransaction, query, limitToLast} from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js';
 
 // ====== BURAYI KENDİ FIREBASE BİLGİLERİNLE DEĞİŞTİR ======
@@ -229,25 +242,39 @@ function toast(t){const e=$('toast');e.textContent=t;e.style.display='block';cle
 const app=initializeApp(firebaseConfig),auth=getAuth(app),db=getDatabase(app);
 await auth.authStateReady();
 if(!auth.currentUser){await new Promise(r=>{$('lg').style.display='flex';
-$('bg').onclick=async()=>{try{await signInWithPopup(auth,new GoogleAuthProvider());r()}catch(e){showErr(e.code||e.message)}};
-$('bs').onclick=async()=>{await signInAnonymously(auth);r()}});$('lg').style.display='none'}
+  let mode='in';const err=t=>{$('lerr').textContent=t};
+  const setMode=m=>{mode=m;$('ltl').className=m==='in'?'on':'';$('ltc').className=m==='up'?'on':'';$('lp2').style.display=m==='up'?'block':'none';$('lgo').textContent=m==='in'?'Giriş yap':'Hesap oluştur';$('lp').autocomplete=m==='in'?'current-password':'new-password';err('')};
+  $('ltl').onclick=()=>setMode('in');$('ltc').onclick=()=>setMode('up');
+  const tr={ç:'c',ğ:'g',ı:'i',ö:'o',ş:'s',ü:'u'},mail=u=>u.toLowerCase().replace(/[çğıöşü]/g,c=>tr[c]).replace(/[^a-z0-9._-]/g,'')+'@ciftlik-dunyasi.com';
+  const AE={'auth/email-already-in-use':'Bu kullanıcı adı alınmış, başka bir tane dene','auth/invalid-credential':'Kullanıcı adı veya şifre hatalı','auth/user-not-found':'Böyle bir hesap yok','auth/wrong-password':'Şifre hatalı','auth/weak-password':'Şifre en az 6 karakter olmalı','auth/too-many-requests':'Çok fazla deneme, biraz bekle','auth/network-request-failed':'İnternet bağlantısı yok','auth/operation-not-allowed':'Firebase konsolunda E-posta/Şifre girişi kapalı (Authentication → Sign-in method)'};
+  $('lgo').onclick=async()=>{const u=$('lu').value.trim(),p=$('lp').value;err('');
+    if(!/^[A-Za-zÇĞİıÖŞÜçğöşü0-9._-]{3,14}$/.test(u))return err('Kullanıcı adı 3-14 karakter olmalı (harf, rakam, . _ -)');
+    if(p.length<6)return err('Şifre en az 6 karakter olmalı');
+    if(mode==='up'&&p!==$('lp2').value)return err('Şifreler aynı değil');
+    $('lgo').disabled=true;
+    try{if(mode==='up'){const c=await createUserWithEmailAndPassword(auth,mail(u),p);try{await updateProfile(c.user,{displayName:u})}catch(e){}}else await signInWithEmailAndPassword(auth,mail(u),p);r()}
+    catch(e){err(AE[e.code]||(e.code||e.message))}finally{$('lgo').disabled=false}};
+  for(const id of['lu','lp','lp2'])$(id).addEventListener('keydown',e=>{if(e.key==='Enter')$('lgo').click()});
+});$('lg').style.display='none'}
 const uid=auth.currentUser.uid;
 let off=0;onValue(ref(db,'.info/serverTimeOffset'),s=>off=s.val()||0);
 const now=()=>Date.now()+off;
 
-let myName=null;try{myName=localStorage.getItem('n')}catch(e){}
-if(!myName&&auth.currentUser.displayName)myName=auth.currentUser.displayName.split(' ')[0];
+let myName=null;if(auth.currentUser.displayName)myName=auth.currentUser.displayName.split(' ')[0].slice(0,14);
+if(!myName){try{myName=localStorage.getItem('n')}catch(e){}}
 if(!myName){myName=(prompt('Oyuncu adın?')||'Çiftçi').slice(0,14);try{localStorage.setItem('n',myName)}catch(e){}}
 let hue=[...uid].reduce((a,c)=>(a*31+c.charCodeAt(0))%360,7)/360;
 
 // ---- Oyun verileri ----
 const N=96,PS=8,PW=N/PS,OLD=5;
-const GROW={wheat:60000,carrot:90000,tomato:120000,corn:180000,strawberry:100000,pumpkin:240000},RIPE={wheat:0xe3c94a,carrot:0xf08a24,tomato:0xd9302c,corn:0xf2d03b,strawberry:0xe8284a,pumpkin:0xf28a1a};
-const ANIM={chicken:{cost:30,t:45000,item:'egg',lv:1,r:2.2,sp:1.2},cow:{cost:100,t:80000,item:'milk',lv:4,r:3,sp:.5},sheep:{cost:60,t:60000,item:'wool',lv:3,r:2.6,sp:.8}};
-const PRICE={wheat:5,carrot:8,tomato:12,corn:18,egg:6,milk:14,apple:7,flour:14,bread:35,cheese:40,strawberry:15,pumpkin:30,wool:12,jam:55,pie:80,fish:10,trout:22,goldfish:80},SEED={wheat:2,carrot:3,tomato:4,corn:6,strawberry:5,pumpkin:9},LV={wheat:1,carrot:1,tomato:2,corn:3,strawberry:2,pumpkin:4};
+const GROW={wheat:120000,carrot:180000,tomato:240000,corn:360000,strawberry:210000,pumpkin:480000},RIPE={wheat:0xe3c94a,carrot:0xf08a24,tomato:0xd9302c,corn:0xf2d03b,strawberry:0xe8284a,pumpkin:0xf28a1a};
+const TREE_C=120,TREE_T=200000;
+const ANIM={chicken:{cost:90,t:120000,item:'egg',lv:1,r:2.2,sp:1.2},cow:{cost:320,t:190000,item:'milk',lv:4,r:3,sp:.5},sheep:{cost:200,t:150000,item:'wool',lv:3,r:2.6,sp:.8}};
+const PRICE={wheat:3,carrot:5,tomato:8,corn:12,egg:3,milk:6,apple:3,flour:7,bread:17,cheese:15,strawberry:11,pumpkin:20,wool:5,jam:40,pie:34,fish:3,trout:7,goldfish:24},SEED={wheat:2,carrot:3,tomato:5,corn:8,strawberry:7,pumpkin:14},LV={wheat:1,carrot:1,tomato:2,corn:3,strawberry:2,pumpkin:4};
 const NAME={wheat:'Buğday',carrot:'Havuç',tomato:'Domates',corn:'Mısır',egg:'Yumurta',milk:'Süt',apple:'Elma',flour:'Un',bread:'Ekmek',cheese:'Peynir',strawberry:'Çilek',pumpkin:'Kabak',wool:'Yün',jam:'Reçel',pie:'Kabak turtası',fish:'Balık',trout:'Alabalık',goldfish:'Altın balık',strawberry_seed:'Çilek tohumu',pumpkin_seed:'Kabak tohumu',wheat_seed:'Buğday tohumu',carrot_seed:'Havuç tohumu',tomato_seed:'Domates tohumu',corn_seed:'Mısır tohumu'};
 const TOOLS=[['hand','✋','El'],['hoe','⛏️','Çapa'],['move','📦','Taşı (T)'],['remove','🧹','Kaldır (R)'],['wheat_seed','🌾','Buğday'],['carrot_seed','🥕','Havuç'],['tomato_seed','🍅','Domates'],['corn_seed','🌽','Mısır'],['chicken','🐔','Tavuk 30🪙'],['cow','🐄','İnek 100🪙'],['can','💧','Kova'],['tree','🌳','Elma ağacı 25🪙'],['fence','🪵','Çit 5🪙'],['flower','🌸','Çiçek 3🪙'],['house','🏠','Ev 80🪙'],['strawberry_seed','🍓','Çilek'],['pumpkin_seed','🎃','Kabak'],['sheep','🐑','Koyun 60🪙'],['path','🪨','Taş yol 2🪙'],['bench','🪑','Bank 15🪙'],['lamp','🏮','Fener 20🪙'],['well','⛲','Kuyu 40🪙'],['rod','🎣','Olta'],['barnwall','🏚️','Ahır duvarı 10🪙'],['gate','🚪','Kapı 8🪙'],['feed','🥬','Yemle (1 buğday)'],['tag','🏷️','İsim ver'],['scare','🧑‍🌾','Korkuluk 15🪙'],['factory','🏭','Fabrika 250🪙']];
-const DECO={fence:{cost:5},flower:{cost:3},house:{cost:80,lv:3},path:{cost:2},bench:{cost:15},lamp:{cost:20,lv:2},well:{cost:40,lv:2},barnwall:{cost:10,lv:3},scare:{cost:15,lv:2},gate:{cost:8},factory:{cost:250,lv:2}};
+const DECO={fence:{cost:12},flower:{cost:8},house:{cost:600,lv:3},path:{cost:6},bench:{cost:70},lamp:{cost:100,lv:2},well:{cost:250,lv:2},barnwall:{cost:22,lv:3},scare:{cost:70,lv:2},gate:{cost:18},factory:{cost:1500,lv:2}};
+for(const t of TOOLS){const c=ANIM[t[0]]?ANIM[t[0]].cost:t[0]==='tree'?TREE_C:DECO[t[0]]?DECO[t[0]].cost:0;if(c)t[2]=t[2].replace(/ \d+🪙$/,'')+' '+c+'🪙'}
 const RC={flour:{i:{wheat:2},lv:2},bread:{i:{flour:2},lv:3},cheese:{i:{milk:2},lv:4},jam:{i:{strawberry:3},lv:2},pie:{i:{pumpkin:1,flour:1},lv:4}};
 let tool='hand',carry=null,rmPend=null;
 const tnm=t=>{const m=t[2].match(/^(.*?)\s*(\d+🪙|\([^)]*\))?$/);return [m[1],(m[2]||'').replace(/^\(|\)$/g,'')]};
@@ -267,7 +294,7 @@ const season=()=>Math.floor(now()/1200000)%4,SEAS=['🌸 Bahar','☀️ Yaz','�
 const gt=d=>GROW[d.k]*(d.wet?.7:1)*(d.w?1.3:1)*(season()===3?1.25:SB[season()].includes(d.k)?.75:1);
 const QN={plant:['Ekim',5],harvest:['Hasat',5],sell:['Satış',5]},QB={plant:1,harvest:2,sell:4};
 function qget(){if(!inv.q||inv.q.d!==Math.floor(now()/86400000))inv.q={d:Math.floor(now()/86400000),plant:0,harvest:0,sell:0,done:0};return inv.q}
-function qadd(t){const q=qget();ach(t);q[t]++;if(q[t]>=QN[t][1]&&!(q.done&QB[t])){q.done|=QB[t];inv.coins+=25;gain(10);toast('Günlük görev tamam! +25🪙')}}
+function qadd(t){const q=qget();ach(t);q[t]++;if(q[t]>=QN[t][1]&&!(q.done&QB[t])){q.done|=QB[t];inv.coins+=8;gain(10);toast('Günlük görev tamam! +8🪙')}}
 const qtxt=()=>{const q=qget();return Object.keys(QN).map(t=>QN[t][0]+' '+Math.min(q[t],QN[t][1])+'/'+QN[t][1]+(q.done&QB[t]?' ✅':'')).join(' · ')};
 function save(){set(ref(db,'lb/'+uid),{n:myName,xp:inv.xp||0});set(ref(db,'inv/'+uid),inv);hud();renderPanel()}
 function hud(){
@@ -276,7 +303,7 @@ function hud(){
   $('bar').innerHTML='<div class="slot menu" data-t="__menu">🎒<br><small>Aletler (E)</small></div>'+recent.map(id=>{const t=TOOLS.find(x=>x[0]===id),n=tnm(t)[0];return `<div class="slot ${id===tool?'on':''}" data-t="${id}">${t[1]}<br><small>${n}${id.endsWith('_seed')?' ('+have(id)+')':''}</small></div>`}).join('');
 }
 $('bar').onclick=e=>{const s=e.target.closest('.slot');if(!s)return;if(s.dataset.t==='__menu')openTools();else selTool(s.dataset.t)};
-{const D=Math.floor(now()/86400000);if(inv.lg!==D){inv.st=inv.lg===D-1?(inv.st||0)+1:1;inv.lg=D;const b=Math.min(100,20*inv.st);inv.coins+=b;setTimeout(()=>toast('🎁 Günlük giriş: '+inv.st+'. gün · +'+b+'🪙'),1500)}}
+{const D=Math.floor(now()/86400000);if(inv.lg!==D){inv.st=inv.lg===D-1?(inv.st||0)+1:1;inv.lg=D;const b=Math.min(25,5*inv.st);inv.coins+=b;setTimeout(()=>toast('🎁 Günlük giriş: '+inv.st+'. gün · +'+b+'🪙'),1500)}}
 await save();
 // gelen satış paraları
 onChildAdded(ref(db,'inbox/'+uid),s=>{const v=s.val();inv.coins+=v.coins||0;if(v.item)add(v.item,v.qty||1);remove(s.ref);save();toast(v.item?'Hediye geldi! '+(v.qty||1)+' '+NAME[v.item]+(v.n?' ('+v.n+')':''):'Para geldi! +'+v.coins+'🪙')});
@@ -308,7 +335,7 @@ hover.position.y=-.15;scene.add(hover);
 const parcels={},oc=new THREE.Color(),pid=(x,z)=>{const px=Math.floor(x/PS),pz=Math.floor(z/PS);return px<OLD&&pz<OLD?px+pz*OLD:OLD*OLD+px+pz*PW},
 pcen=id=>{id=+id;let px,pz;if(id<OLD*OLD){px=id%OLD;pz=Math.floor(id/OLD)}else{id-=OLD*OLD;px=id%PW;pz=Math.floor(id/PW)}return [px*PS+PS/2,pz*PS+PS/2]};
 let spawned=false,homeI=0,claimT=0;
-const myPs=()=>Object.entries(parcels).filter(([i,p])=>p.u===uid),pcost=n=>n<1?0:Math.round(1000*Math.pow(1.6,n-1)/50)*50;
+const myPs=()=>Object.entries(parcels).filter(([i,p])=>p.u===uid),pcost=n=>n<1?0:Math.round(1500*Math.pow(1.7,n-1)/50)*50;
 function claimLbl(){const c=pcost(myPs().length);$('claim').innerHTML='<span>🏡 Parsel al<small>'+(c?c.toLocaleString('tr-TR')+'🪙':'ilk parsel ücretsiz')+'</small></span>'}
 function repaintAll(){for(let z=0;z<N;z++)for(let x=0;x<N;x++)paint(x+'_'+z)}
 onValue(ref(db,'parcels'),s=>{const v=s.val()||{};for(const k in parcels)delete parcels[k];for(const k in v)if(v[k])parcels[k]=v[k];
@@ -422,10 +449,13 @@ addEventListener('keydown',e=>{
 });
 addEventListener('keyup',e=>keys[e.key.toLowerCase()]=false);
 const ray=new THREE.Raycaster(),pt=new THREE.Vector2();
-function pick(e){
+function pick(e,full){
   pt.set(e.clientX/innerWidth*2-1,-(e.clientY/innerHeight)*2+1);ray.setFromCamera(pt,cam);
   const h=ray.intersectObject(ground)[0];if(!h)return null;
-  return {x:h.instanceId%N,z:Math.floor(h.instanceId/N)};
+  let okey=null;
+  if(full){const hs=ray.intersectObjects(Object.values(objs),true);if(hs.length&&hs[0].distance<=h.distance+.6){let o=hs[0].object;while(o&&!(o.userData&&o.userData.cx!==undefined&&objs[o.userData.cx+'_'+o.userData.cz]===o))o=o.parent;if(o)okey=o.userData.cx+'_'+o.userData.cz}}
+  let sk=null,sd=999;if(full&&(tool==='remove'||tool==='move')){const v=new THREE.Vector3();for(const k in objs){if(!tiles[k]||tiles[k].s==='soil')continue;const o=objs[k];v.set(o.position.x,.5,o.position.z).project(cam);if(v.z>=1)continue;const dd=Math.hypot((v.x+1)/2*innerWidth-e.clientX,(1-v.y)/2*innerHeight-e.clientY);if(dd<sd){sd=dd;sk=k}}if(sd>46)sk=null}
+  return {x:h.instanceId%N,z:Math.floor(h.instanceId/N),okey,sk,sd};
 }
 ren.domElement.addEventListener('pointermove',e=>{const p=pick(e);if(p){hover.position.set(p.x,-.15,p.z);const zz=(parcels[pid(p.x,p.z)]||{}).u===uid?zoneAt(p.x,p.z):null;hover.material.color.setHex(zz==='field'?0x7cff7c:zz==='barn'?0xffa060:0xffffff)}});
 const cptr=new Set();let tp=null;
@@ -433,17 +463,17 @@ const hoverAt=p=>{hover.position.set(p.x,-.15,p.z)};
 ren.domElement.addEventListener('pointerdown',e=>{
   if(cpOpen()||bmOpen()||tpOpen()){closeChat();closeMap();closeTools();return}
   if(panel.style.display==='block'){panel.style.display='none';return}
-  if(e.pointerType==='mouse'){const p=pick(e);if(p)act(p.x,p.z);return}
+  if(e.pointerType==='mouse'){const p=pick(e,true);if(p)act(p.x,p.z,p.okey,p.sk,p.sd);return}
   cptr.add(e.pointerId);if(cptr.size>1){tp=null;return}
   tp={id:e.pointerId,x:e.clientX,y:e.clientY,t:performance.now()};
 });
 ren.domElement.addEventListener('pointerup',e=>{cptr.delete(e.pointerId);
   if(e.pointerType==='mouse'||!tp||tp.id!==e.pointerId)return;
   const ok=Math.hypot(e.clientX-tp.x,e.clientY-tp.y)<14&&performance.now()-tp.t<600;tp=null;
-  if(ok){const p=pick(e);if(p){hoverAt(p);act(p.x,p.z)}}});
+  if(ok){const p=pick(e,true);if(p){hoverAt(p);act(p.x,p.z,p.okey,p.sk,p.sd)}}});
 ren.domElement.addEventListener('pointercancel',e=>{cptr.delete(e.pointerId);tp=null});
 
-function act(x,z){
+function act(x,z,okey,sk,sd){
   if(tool!=='move')carry=null;
   if(tool==='rod')return fish();
   if(Math.hypot(x-me.x,z-me.z)>7)return toast('Çok uzak, yaklaş');
@@ -451,7 +481,8 @@ function act(x,z){
   if(!P)return toast('Sahipsiz arazi. Parsel almak için K');
   if(P.u!==uid)return toast(P.n+' adlı oyuncunun parseli');
   let key=x+'_'+z;
-  if(tool==='hand'||tool==='feed'||tool==='tag'||tool==='remove'||(tool==='move'&&!carry))for(const k in objs){const o=objs[k];if(ANIM[o.userData.s]&&Math.hypot(o.position.x-x,o.position.z-z)<1.4){key=k;break}}
+  if(tool==='remove'||(tool==='move'&&!carry)){if(okey&&tiles[okey])key=okey;else if(sk&&tiles[sk]&&(sd<24||!tiles[key]))key=sk;else if(!tiles[key])for(const k in objs){const o=objs[k];if(ANIM[o.userData.s]&&Math.hypot(o.position.x-x,o.position.z-z)<1.4){key=k;break}}}
+  if(tool==='hand'||tool==='feed'||tool==='tag')for(const k in objs){const o=objs[k];if(ANIM[o.userData.s]&&Math.hypot(o.position.x-x,o.position.z-z)<1.4){key=k;break}}
   if(tool==='hand')for(const id in drops){const g=drops[id];if(Math.hypot(g.userData.x-x,g.userData.z-z)<1){key=g.userData.key;break}}
   if(tool==='hand'&&!tiles[key])for(const k in objs){const o=objs[k];if(o.userData.s==='factory'&&Math.hypot(o.position.x-x,o.position.z-z)<1.3){key=k;break}}
   const d=tiles[key],r=ref(db,'world/'+key),zn=zoneAt(x,z);
@@ -461,7 +492,7 @@ function act(x,z){
       if(now()-d.t>=gt(d)){add(d.k,1+((inv.up&&inv.up.bask&&Math.random()<.25)?1:0));gain(5);qadd('harvest');save();set(r,{s:'soil'});toast(NAME[d.k]+' hasat edildi')}
       else if(d.w){set(r,{...d,w:0});gain(1);toast('Yabani ot temizlendi')}else toast('Henüz olgunlaşmadı')
     }else if(d.s==='tree'){
-      if(now()-d.t>=70000){add('apple',1);gain(4);save();set(r,{s:'tree',t:now()});toast('Elma toplandı')}
+      if(now()-d.t>=TREE_T){add('apple',1);gain(4);save();set(r,{s:'tree',t:now()});toast('Elma toplandı')}
       else toast('Elmalar henüz olgunlaşmadı')
     }else if(ANIM[d.s]){
       if(!collect(key,d))toast('Henüz hazır değil')
@@ -472,19 +503,22 @@ function act(x,z){
     add('wheat',-1);gain(2);save();set(r,{...d,t:d.t-A.t*.5,f:1});pop('❤️');toast('Yemlendi: üretim %50 hızlandı')
   }else if(tool==='remove'){
     if(!d)return toast('Kaldırılacak bir şey yok');
+    {const [a0,b0]=key.split('_').map(Number);if((parcels[pid(a0,b0)]||{}).u!==uid)return toast('Bu senin parselin değil')}
     if(d.s==='soil'){remove(r);return}
-    const [kx,kz]=key.split('_').map(Number),val=ANIM[d.s]?ANIM[d.s].cost:d.s==='tree'?25:DECO[d.s]?DECO[d.s].cost:0;
+    const [kx,kz]=key.split('_').map(Number),val=ANIM[d.s]?ANIM[d.s].cost:d.s==='tree'?TREE_C:DECO[d.s]?DECO[d.s].cost:0;
     const refund=Math.floor(val*(ANIM[d.s]&&!zoneAt(kx,kz)?1:.5));
     const nm=d.s==='crop'?NAME[d.k]:((TOOLS.find(t=>t[0]===d.s)||[0,0,d.s])[2]).replace(/ ?\(.*\)| \d+🪙/g,'');
     if(!rmPend||rmPend.key!==key||performance.now()-rmPend.t>4000){rmPend={key,t:performance.now()};return toast('🧹 '+nm+' kaldırılsın mı? Onay için tekrar dokun'+(refund?' (+'+refund+'🪙)':''))}
     rmPend=null;if(ANIM[d.s])collect(key,d);if(refund){inv.coins+=refund;pop('+'+refund+'🪙')}save();remove(r);toast(nm+' kaldırıldı')
   }else if(tool==='move'){
     if(!carry){
-      if(!d||d.s==='soil'||d.s==='crop')return toast('Taşımak için hayvana, ağaca veya eşyaya dokun');
+      if(!d||d.s==='soil')return toast('Taşımak için bir şeye dokun (hayvan, çit, ağaç, eşya, ekin)');
+      {const [a0,b0]=key.split('_').map(Number);if((parcels[pid(a0,b0)]||{}).u!==uid)return toast('Bu senin parselin değil')}
       carry={key,d:{...d}};return toast('📦 Seçildi · şimdi boş bir yere dokun (iptal: aynı yere tekrar dokun)')}
     if(key===carry.key){carry=null;return toast('Taşıma iptal edildi')}
     if(d)return toast('Boş çim bir alan seç');
     if(ANIM[carry.d.s]&&!zn)return toast(MB);
+    if(carry.d.s==='crop'&&zn!=='field')return toast(MF);
     set(r,carry.d);remove(ref(db,'world/'+carry.key));carry=null;toast('✅ Taşındı')
   }else if(tool==='can'){
     const R2=inv.up&&inv.up.can?1:0;let c=0;
@@ -507,8 +541,8 @@ function act(x,z){
   }else if(tool==='tree'){
     if(d)return toast('Boş çim bir alan seç');
     if(lvl()<2)return toast('Seviye 2 gerekir');
-    if(inv.coins<25)return toast('Yetersiz para');
-    inv.coins-=25;save();set(r,{s:'tree',t:now()});
+    if(inv.coins<TREE_C)return toast('Yetersiz para');
+    inv.coins-=TREE_C;save();set(r,{s:'tree',t:now()});
   }else if(ANIM[tool]){
     const A=ANIM[tool];
     if(d)return toast('Boş çim bir alan seç');
@@ -547,9 +581,9 @@ function renderPanel(){
     c+='<h4>🏭 Üretim</h4>'+Object.keys(RC).map(k=>{const r=RC[k],lock=lvl()<r.lv,can=Math.min(...Object.entries(r.i).map(([x,n])=>Math.floor(have(x)/n)));return R(ic(k),NAME[k],lock?'🔒 Seviye '+r.lv+' gerekir':Object.entries(r.i).map(([x,n])=>n+' '+NAME[x]+' ('+have(x)+')').join(' + ')+' · satış '+price(k)+'🪙',B('fcraft',k,'Üret',lock||can<1)+(can>1&&!lock?B('fcraftmax',k,'Max ('+can+')'):''))}).join('');
   }else if(ptab==='buy'){
     c+='<h4>🌱 Tohumlar</h4>'+Object.keys(SEED).map(k=>{const lock=lvl()<LV[k];return R(ic(k),NAME[k+'_seed'],lock?'🔒 Seviye '+LV[k]+' gerekir':'Çantanda: '+have(k+'_seed'),B('buy',k,SEED[k]+'🪙',lock||inv.coins<SEED[k]))}).join('');
-    c+='<h4>🏭 Fabrika</h4>'+R('🏭','Fabrika','Un, ekmek, peynir, reçel, turta üretir · sadece kendi parselinde · Sv.2 · 250🪙',B('pickfac',null,'Kur',lvl()<2))+'<h4>🛠️ Yükseltmeler</h4>'+[['can','💧','Büyük kova','3×3 alanı tek seferde sular',120,4],['bask','🧺','Büyük sepet','%25 ihtimalle çifte hasat',150,3]].map(u=>inv.up&&inv.up[u[0]]?R(u[1],u[2],'✅ Alındı','','done'):R(u[1],u[2],lvl()<u[5]?'🔒 Seviye '+u[5]+' gerekir':u[3],B('up',u[0],u[4]+'🪙',lvl()<u[5]||inv.coins<u[4]))).join('');
+    c+='<h4>🏭 Fabrika</h4>'+R('🏭','Fabrika','Un, ekmek, peynir, reçel, turta üretir · sadece kendi parselinde · Sv.2 · '+DECO.factory.cost+'🪙',B('pickfac',null,'Kur',lvl()<2))+'<h4>🛠️ Yükseltmeler</h4>'+[['can','💧','Büyük kova','3×3 alanı tek seferde sular',900,4],['bask','🧺','Büyük sepet','%25 ihtimalle çifte hasat',1200,3]].map(u=>inv.up&&inv.up[u[0]]?R(u[1],u[2],'✅ Alındı','','done'):R(u[1],u[2],lvl()<u[5]?'🔒 Seviye '+u[5]+' gerekir':u[3],B('up',u[0],u[4]+'🪙',lvl()<u[5]||inv.coins<u[4]))).join('');
   }else if(ptab==='sell'){
-    if(mact())c+=R('🧙','Gezgin tüccar: '+NAME[mitem()],'2× fiyat · kalan '+Math.ceil((180000-now()%600000)/60000)+' dk · en çok 5 ürün',B('merch',null,'Sat',!have(mitem())),'hot');
+    if(mact())c+=R('🧙','Gezgin tüccar: '+NAME[mitem()],'1.3× fiyat · kalan '+Math.ceil((180000-now()%600000)/60000)+' dk · en çok 5 ürün',B('merch',null,'Sat',!have(mitem())),'hot');
     c+='<h4>💰 Ürünlerini sat</h4>'+(sel.length?sel.map(k=>{const p=price(k),t=p>PRICE[k]?'▲':p<PRICE[k]?'▼':'';return R(ic(k),NAME[k]+' ×'+have(k),spark(k)+' '+p+'🪙 '+t,B('sell',k,'1 sat')+(have(k)>1?B('sellall',k,'Hepsi'):''))}).join(''):'<div class="empty">Satacak ürünün yok.<br>Önce hasat et 🌾</div>');
     c+='<h4>📦 Günlük siparişler</h4>'+orders().map((o,i)=>(qget().o>>i&1)?R('✅',o.q+' '+NAME[o.k],'Teslim edildi','','done'):R(ic(o.k),o.q+' '+NAME[o.k],'Çantanda: '+have(o.k)+' · ödül '+o.r+'🪙',B('order',i,'Teslim',have(o.k)<o.q))).join('');
   }else if(ptab==='mkt'){
@@ -558,11 +592,11 @@ function renderPanel(){
     c+='<h4>🛒 Oyuncu pazarı</h4>'+(L.length?L.map(([id,l])=>R(ic(l.item),l.qty+'× '+(NAME[l.item]||esc(l.item)),(l.u===uid?'Senin ilanın':'Satıcı: '+esc(l.n))+' · '+l.price+'🪙',l.u===uid?B('cancel',id,'İptal'):B('purchase',id,'Al · '+l.price+'🪙',inv.coins<l.price))).join(''):'<div class="empty">Henüz ilan yok</div>');
   }else if(ptab==='quest'){
     const q=qget(),T=inv.tot||{};
-    c+='<h4>📋 Günlük görevler</h4>'+Object.keys(QN).map(t=>{const n=QN[t][1],v=Math.min(q[t]||0,n),d=q.done&QB[t];return `<div class="row ${d?'done':''}"><div class="ic">${d?'✅':{plant:'🌱',harvest:'🧺',sell:'💰'}[t]}</div><div class="tx">${QN[t][0]} ${v}/${n}<div class="pb"><u style="width:${v/n*100}%"></u></div></div></div>`}).join('')+'<div class="note">Her görev +25🪙</div>';
+    c+='<h4>📋 Günlük görevler</h4>'+Object.keys(QN).map(t=>{const n=QN[t][1],v=Math.min(q[t]||0,n),d=q.done&QB[t];return `<div class="row ${d?'done':''}"><div class="ic">${d?'✅':{plant:'🌱',harvest:'🧺',sell:'💰'}[t]}</div><div class="tx">${QN[t][0]} ${v}/${n}<div class="pb"><u style="width:${v/n*100}%"></u></div></div></div>`}).join('')+'<div class="note">Her görev +15🪙</div>';
     const st=CH[inv.cs||0];
     c+='<h4>📜 Ana görev</h4>'+(st?(()=>{const v=Math.max(0,Math.min(st[2],(T[st[1]]||0)-(inv.cb||0)));return `<div class="row"><div class="ic">🎯</div><div class="tx">${st[0]} (${v}/${st[2]})<div class="pb"><u style="width:${v/st[2]*100}%"></u></div><small>Ödül: ${st[3]}🪙</small></div></div>`})():'<div class="empty">Tüm görevler bitti 🎉</div>');
     const gn=gr.n||0;
-    c+='<h4>🏛️ Köy ambarı</h4>'+`<div class="row"><div class="ic">${ic(gitem())}</div><div class="tx">${NAME[gitem()]} ${gn}/${GN}<div class="pb"><u style="width:${Math.min(100,gn/GN*100)}%"></u></div><small>Herkes birlikte doldurur</small></div><div class="bs">${B('give',null,'+1',!have(gitem()))}${B('giveall',null,'Hepsi ('+have(gitem())+')',!have(gitem()))}</div></div>`+(gn>=GN&&gr.c&&gr.c[uid]&&!qget().g?R('🎁','Ödül hazır!','',B('gclaim',null,'Al 80🪙'),'hot'):'');
+    c+='<h4>🏛️ Köy ambarı</h4>'+`<div class="row"><div class="ic">${ic(gitem())}</div><div class="tx">${NAME[gitem()]} ${gn}/${GN}<div class="pb"><u style="width:${Math.min(100,gn/GN*100)}%"></u></div><small>Herkes birlikte doldurur</small></div><div class="bs">${B('give',null,'+1',!have(gitem()))}${B('giveall',null,'Hepsi ('+have(gitem())+')',!have(gitem()))}</div></div>`+(gn>=GN&&gr.c&&gr.c[uid]&&!qget().g?R('🎁','Ödül hazır!','',B('gclaim',null,'Al 25🪙'),'hot'):'');
     c+='<h4>🏅 Başarımlar</h4><div>'+ACH.map(a=>`<span class="pill ${inv.ach&&inv.ach[a[0]]?'on':''}">${inv.ach&&inv.ach[a[0]]?'✅':'🔒'} ${a[1]}</span>`).join('')+'</div>';
     c+='<h4>🏆 Liderler</h4>'+(Object.values(lb).sort((x,y)=>y.xp-x.xp).slice(0,5).map((p,i)=>R(['🥇','🥈','🥉','4️⃣','5️⃣'][i],esc(p.n),'Seviye '+(Math.floor(Math.sqrt(p.xp/20))+1))).join('')||'<div class="empty">—</div>');
     c+=`<h4>ℹ️ Bilgi</h4><div class="note">${SEAS[season()]}: ${season()===3?'ekinler %25 yavaş büyür':'bonus ekinler %25 hızlı büyür: '+SB[season()].map(k=>NAME[k]).join(', ')}<br>📊 hasat ${T.harvest||0} · satış ${T.sell||0} · ekim ${T.plant||0} · balık ${T.fish||0}</div>`;
@@ -571,11 +605,11 @@ function renderPanel(){
     const on=Object.entries(others);
     c+='<h4>👥 Çevrimiçi</h4>'+(on.length?`<div class="form"><select id="mi">${opts}</select><input id="mq" type="number" min="1" inputmode="numeric" placeholder="Hediye adedi"></div>`+on.map(([id,o])=>R('🧑‍🌾',esc(o.n||'?'),'',B('fadd',id,'➕ Ekle')+B('gift',id,'🎁 10🪙')+B('giftitem',id,'🎁 Ürün'))).join(''):'<div class="empty">Şu an kimse yok</div>');
     c+='<h4>🤝 Arkadaşlar</h4>'+(Object.entries(fr).map(([id,n])=>R('🤝',esc(n),'',B('visit',id,'Ziyaret')+B('fdel',id,'✕'))).join('')||'<div class="empty">Henüz arkadaşın yok</div>');
-    c+=`<h4>🎨 Karakter</h4><div class="form"><input id="lh" type="range" min="0" max="100" value="${Math.round(hue*100)}"><select id="lt"><option value="0">Şapkasız</option><option value="1" ${inv.look&&inv.look.ht==1?'selected':''}>Şapka</option><option value="2" ${inv.look&&inv.look.ht==2?'selected':''}>Taç</option></select>${B('look',null,'Uygula')}</div><button class="wide" data-a="logout">🚪 Çıkış yap</button>`;
+    c+=`<h4>🎨 Karakter</h4><div class="form"><input id="lh" type="range" min="0" max="100" value="${Math.round(hue*100)}"><select id="lt"><option value="0">Şapkasız</option><option value="1" ${inv.look&&inv.look.ht==1?'selected':''}>Şapka</option><option value="2" ${inv.look&&inv.look.ht==2?'selected':''}>Taç</option></select>${B('look',null,'Uygula')}</div><div class="note">👤 ${esc(myName)}${auth.currentUser.isAnonymous?' · misafir (çıkarsan veri kaybolur)':''}</div><button class="wide" data-a="logout">🚪 Çıkış yap</button>`;
   }
   panel.innerHTML=`<div class="phead"><div class="ph"><b>${facOpen?'🏭 Fabrika':'🏪 Dükkan'}</b><span class="coin">🪙 ${inv.coins}</span><button data-a="close" class="x" title="Kapat (Esc)">✕</button></div>${facOpen?'':`<div class="tabs">${TABS.map(t=>`<button data-a="tab" data-k="${t[0]}" class="${t[0]===ptab?'on':''}"><span>${t[1]}</span>${t[2]}</button>`).join('')}</div>`}</div><div class="pbody">${c}</div>`;
   for(const id in keep){const e=$(id);if(e)e.value=keep[id]}
-  panel.scrollTop=sc;panel.querySelector('.tabs').scrollLeft=tl;
+  panel.scrollTop=sc;{const tb=panel.querySelector('.tabs');if(tb)tb.scrollLeft=tl}
 }
 // ilanı atomik olarak al (iki kişi aynı anda alamaz)
 async function take(id,cond){
@@ -592,16 +626,16 @@ panel.onclick=async e=>{
   if(a==='tab'){ptab=k;renderPanel();panel.scrollTop=0;return}
   if(a==='logout'){await signOut(auth);location.reload()}
   if(a==='merch'){if(!mact())return toast('Tüccar gitti');const it=mitem(),w=mw();if(inv.mw!==w){inv.mw=w;inv.mc=0}const n=Math.min(5-(inv.mc||0),have(it));
-    if(n<1)return toast((inv.mc||0)>=5?'Bu ziyarette en fazla 5 ürün satılır':NAME[it]+' yok');const g=price(it)*2*n;add(it,-n);inv.mc=(inv.mc||0)+n;inv.coins+=g;pop('+'+g+'🪙');for(let i=0;i<n;i++)ach('sell');save()}
+    if(n<1)return toast((inv.mc||0)>=5?'Bu ziyarette en fazla 5 ürün satılır':NAME[it]+' yok');const g=Math.round(price(it)*1.3*n);add(it,-n);inv.mc=(inv.mc||0)+n;inv.coins+=g;pop('+'+g+'🪙');for(let i=0;i<n;i++)ach('sell');save()}
   if(a==='giftitem'){const it=$('mi')?.value,q=+$('mq').value|0;if(!it||q<1||have(it)<q)return toast('Aşağıdan ürün ve adet seç');add(it,-q);push(ref(db,'inbox/'+k),{item:it,qty:q,n:myName});save();toast('Hediye gönderildi: '+q+' '+NAME[it])}
-  if(a==='up'){const U={can:[120,4,'Büyük kova'],bask:[150,3,'Büyük sepet']}[k];inv.up=inv.up||{};if(inv.up[k])return;if(lvl()<U[1])return toast('Seviye '+U[1]+' gerekir');if(inv.coins<U[0])return toast('Yetersiz para');inv.coins-=U[0];inv.up[k]=1;save();toast(U[2]+' alındı!')}
+  if(a==='up'){const U={can:[900,4,'Büyük kova'],bask:[1200,3,'Büyük sepet']}[k];inv.up=inv.up||{};if(inv.up[k])return;if(lvl()<U[1])return toast('Seviye '+U[1]+' gerekir');if(inv.coins<U[0])return toast('Yetersiz para');inv.coins-=U[0];inv.up[k]=1;save();toast(U[2]+' alındı!')}
   if(a==='give'||a==='giveall'){const it=gitem(),q=a==='give'?1:have(it);if(q<1||have(it)<q)return toast('Çantanda '+NAME[it]+' yok');add(it,-q);pop('+'+q+' '+NAME[it]);gain(q);save();
     await runTransaction(ref(db,'granary/'+gday()+'/n'),c=>(c||0)+q);await runTransaction(ref(db,'granary/'+gday()+'/c/'+uid),c=>(c||0)+q)}
-  if(a==='gclaim'){const q=qget();if(q.g||(gr.n||0)<GN||!(gr.c&&gr.c[uid]))return;q.g=1;inv.coins+=80;gain(15);pop('+80🪙');save();toast('Köy ambarı ödülü alındı!')}
+  if(a==='gclaim'){const q=qget();if(q.g||(gr.n||0)<GN||!(gr.c&&gr.c[uid]))return;q.g=1;inv.coins+=25;gain(15);pop('+25🪙');save();toast('Köy ambarı ödülü alındı!')}
   if(a==='order'){const o=orders()[+k],q=qget();if(!o||(q.o>>k&1))return;if(have(o.k)<o.q)return toast(o.q+' '+NAME[o.k]+' gerekir');add(o.k,-o.q);inv.coins+=o.r;q.o=(q.o||0)|(1<<k);gain(8);pop('+'+o.r+'🪙');ach('sell');save()}
   if(a==='buy'){if(lvl()<LV[k])return toast('Seviye '+LV[k]+' gerekir');if(inv.coins<SEED[k])return toast('Yetersiz para');inv.coins-=SEED[k];add(k+'_seed',1);save()}
   if(a==='sell'){add(k,-1);pop('+'+price(k)+'🪙');inv.coins+=price(k);sold(k);snd(900);qadd('sell');save()}
-  if(a==='sellall'){const n=have(k);if(n<1)return;let en=dec(econ[k]),tot=0;for(let i=0;i<n;i++){tot+=Math.max(1,Math.round(PRICE[k]*Math.max(.5,Math.min(1.5,1.4-en/40))));en++}
+  if(a==='sellall'){const n=have(k);if(n<1)return;let en=dec(econ[k]),tot=0;for(let i=0;i<n;i++){tot+=Math.max(1,Math.round(PRICE[k]*pm(en)));en++}
     add(k,-n);inv.coins+=tot;pop('+'+tot+'🪙');runTransaction(ref(db,'econ/'+k),e=>({n:dec(e)+n,t:now()}));snd(900);for(let i=0;i<n;i++)qadd('sell');save();toast(n+' '+NAME[k]+' satıldı: +'+tot+'🪙')}
   if(a==='fadd'){set(ref(db,'friends/'+uid+'/'+k),(others[k]&&others[k].n)||'?');toast('Arkadaş eklendi')}
   if(a==='fdel')remove(ref(db,'friends/'+uid+'/'+k));
@@ -624,8 +658,9 @@ panel.onclick=async e=>{
 
 // ---- Dinamik fiyat ----
 let econ={};onValue(ref(db,'econ'),s=>{econ=s.val()||{};renderPanel()});
-const dec=e=>e?e.n*Math.pow(.5,(now()-e.t)/300000):0;
-const price=k=>Math.max(1,Math.round(PRICE[k]*Math.max(.5,Math.min(1.5,1.4-dec(econ[k])/40))));
+const dec=e=>e?e.n*Math.pow(.5,(now()-e.t)/600000):0;
+const pm=en=>Math.max(.4,Math.min(1.1,1.1-en/18));
+const price=k=>Math.max(1,Math.round(PRICE[k]*pm(dec(econ[k]))));
 const sold=k=>runTransaction(ref(db,'econ/'+k),e=>({n:dec(e)+1,t:now()}));
 let fr={};onValue(ref(db,'friends/'+uid),s=>{fr=s.val()||{};renderPanel()});
 let lb={};onValue(ref(db,'lb'),s=>{lb=s.val()||{};renderPanel()});
@@ -733,7 +768,7 @@ function zoneAt(x,z){const q=tiles[x+'_'+z];if(q&&(q.s==='fence'||q.s==='barnwal
   if(flood(x,z,s=>s==='barnwall'||s==='gate'))return 'barn';
   if(flood(x,z,s=>s==='fence'||s==='gate'))return 'field';return null}
 const WALL={fence:1,barnwall:1,gate:1},MF='Tarla sadece çitle çevrili alanda açılır (🪵 Çit + 🚪 Kapı)',MB='Hayvanlar çitli veya ahır duvarlı bir alanın içine konur (🪵 Çit / 🏚️ Duvar + 🚪 Kapı)',MX='Çitli alana sadece tarla, ahıra sadece hayvan konur';
-const CH=[['İlk 5 ürünü hasat et','harvest',5,30],['Tarlaya 15 tohum ek','plant',15,40],['10 ürün sat','sell',10,50],['3 balık tut','fish',3,60],['25 ürün hasat et','harvest',25,100],['40 ürün sat','sell',40,150]];
+const CH=[['İlk 5 ürünü hasat et','harvest',5,10],['Tarlaya 15 tohum ek','plant',15,12],['10 ürün sat','sell',10,15],['3 balık tut','fish',3,20],['25 ürün hasat et','harvest',25,30],['40 ürün sat','sell',40,45]];
 const mw=()=>Math.floor(now()/600000),mact=()=>now()%600000<180000,mitem=()=>['wheat','carrot','egg','tomato','corn','milk','strawberry','pumpkin','wool','fish'][mw()%10];
 const hist={};const sample=()=>{for(const k in PRICE){(hist[k]=hist[k]||[]).push(price(k));if(hist[k].length>30)hist[k].shift()}};sample();setInterval(sample,20000);
 function spark(k){const h=hist[k]||[];if(h.length<2)return '';const mn=Math.min(...h),r=(Math.max(...h)-mn)||1;
@@ -743,12 +778,12 @@ onValue(ref(db,'granary/'+gday()),sn=>{gr=sn.val()||{};renderPanel()});
 let lastSea=-1,fishing=0,bob=null;
 const OP=[['wheat',1],['carrot',1],['egg',1],['tomato',2],['strawberry',2],['flour',2],['corn',3],['wool',3],['bread',3],['milk',4],['cheese',4],['pumpkin',4]];
 function orders(){const d=Math.floor(now()/86400000),pool=OP.filter(o=>o[1]<=lvl()),out=[];
-  for(let i=0;out.length<3&&i<12;i++){const k=pool[(d*7+i*5+i*i*3)%pool.length][0];if(out.some(o=>o.k===k))continue;const q=2+(d+i*3)%4;out.push({k,q,r:Math.round(PRICE[k]*q*1.5)+10})}return out}
+  for(let i=0;out.length<3&&i<12;i++){const k=pool[(d*7+i*5+i*i*3)%pool.length][0];if(out.some(o=>o.k===k))continue;const q=2+(d+i*3)%4;out.push({k,q,r:Math.round(PRICE[k]*q*1.15)+2})}return out}
 function fish(){if(fishing)return toast('Olta suda, bekle');
   const ds=[me.x,N-1-me.x,me.z,N-1-me.z],mi=ds.indexOf(Math.min(...ds));if(ds[mi]>2.5)return toast('Balık tutmak için haritanın kıyısına git');
   const v=[[-1,0],[1,0],[0,-1],[0,1]][mi];bob=new THREE.Mesh(new THREE.SphereGeometry(.12),new THREE.MeshBasicMaterial({color:0xee3333}));
   bob.position.set(me.x+v[0]*(ds[mi]+1.6),-.3,me.z+v[1]*(ds[mi]+1.6));scene.add(bob);fishing=1;toast('🎣 Olta atıldı...');snd(300);
-  setTimeout(()=>{scene.remove(bob);bob=null;fishing=0;const r=Math.random(),k=r<.6?'fish':r<.9?'trout':'goldfish';add(k,1);gain(5);ach('fish');save();toast('🎣 '+NAME[k]+' yakaladın!');snd(700)},2500+Math.random()*3000)}
+  setTimeout(()=>{scene.remove(bob);bob=null;fishing=0;const r=Math.random(),k=r<.8?'fish':r<.985?'trout':'goldfish';add(k,1);gain(5);ach('fish');save();toast('🎣 '+NAME[k]+' yakaladın!');snd(700)},35000+Math.random()*25000)}
 setInterval(()=>{let hit=0;for(const k in tiles){const d=tiles[k];if(d.s!=='crop'||d.w)continue;const[x,z]=k.split('_').map(Number),P=parcels[pid(x,z)];if(!P||P.u!==uid)continue;
   let sc=false;for(const j in tiles)if(tiles[j].s==='scare'){const[a,b]=j.split('_').map(Number);if(Math.hypot(a-x,b-z)<=4){sc=true;break}}
   if(Math.random()<(sc?.01:.05)){set(ref(db,'world/'+k),{...d,w:1});hit++}}
@@ -756,7 +791,7 @@ setInterval(()=>{let hit=0;for(const k in tiles){const d=tiles[k];if(d.s!=='crop
 let back=null;$('back').onclick=()=>{if(back){me.x=back.x;me.z=back.z}back=null;$('back').style.display='none'};
 // ---- Başarımlar ----
 const ACH=[['h1','İlk hasat','harvest',1],['h50','Çiftçi (50 hasat)','harvest',50],['s50','Tüccar (50 satış)','sell',50],['p100','Bahçıvan (100 ekim)','plant',100],['f10','Balıkçı (10 balık)','fish',10]];
-function ach(t){inv.tot=inv.tot||{};inv.tot[t]=(inv.tot[t]||0)+1;inv.ach=inv.ach||{};for(const [id,nm,ty,n] of ACH)if(!inv.ach[id]&&inv.tot[ty]>=n){inv.ach[id]=1;inv.coins+=50;toast('🏅 Başarım: '+nm+' +50🪙');snd(880,.3)}
+function ach(t){inv.tot=inv.tot||{};inv.tot[t]=(inv.tot[t]||0)+1;inv.ach=inv.ach||{};for(const [id,nm,ty,n] of ACH)if(!inv.ach[id]&&inv.tot[ty]>=n){inv.ach[id]=1;inv.coins+=15;toast('🏅 Başarım: '+nm+' +15🪙');snd(880,.3)}
   const st=CH[inv.cs||0];if(st&&st[1]===t&&inv.tot[t]-(inv.cb||0)>=st[2]){inv.coins+=st[3];gain(10);inv.cs=(inv.cs||0)+1;const nx=CH[inv.cs];inv.cb=nx?(inv.tot[nx[1]]||0):0;toast('📜 Görev tamam: '+st[0]+' +'+st[3]+'🪙')}}
 // ---- Ana döngü ----
 const clock=new THREE.Clock();
@@ -773,7 +808,7 @@ function loop(){
     const d=m.userData;
     if(d.s==='crop'){const p=Math.min(1,(t-d.t)/gt(d));m.scale.y=.2+.8*p;gB.setHex(RIPE[d.k]);m.material.color.copy(gA).lerp(gB,p*p);if(d.w)m.material.color.lerp(WC,.55)}
     else if(DECO[d.s]){}
-    else if(d.s==='tree'){const e=m.getObjectByName('egg');if(e)e.visible=t-d.t>=70000}
+    else if(d.s==='tree'){const e=m.getObjectByName('egg');if(e)e.visible=t-d.t>=TREE_T}
     else{const A=ANIM[d.s],tt=t/1000*A.sp+d.ph,x0=Math.floor(d.cx/PS)*PS,z0=Math.floor(d.cz/PS)*PS;
       const [px,pz]=apos(d,t);m.position.x=px;m.position.z=pz;
       m.rotation.y=Math.atan2(Math.cos(tt),-.7*Math.sin(tt*.7));
@@ -790,7 +825,7 @@ function loop(){
   const rn=rainAt(t);const sn=season()===3;rain.visible=rn||sn;rain.material.color.setHex(sn&&!rn?0xffffff:0xaaccff);rain.material.size=sn&&!rn?.2:.12;$('wx').textContent=SEAS[season()]+' · '+(rn?'🌧️ Yağmur':sn?'Karlı':'Açık')+' · 👥 '+(Object.keys(others).length+1)+' çevrimiçi';
   if(rn||sn){for(let i=1;i<900;i+=3){rp[i]-=(sn&&!rn?3:14)*dt;if(rp[i]<0)rp[i]=14}rain.geometry.attributes.position.needsUpdate=true;rain.position.set(me.x,0,me.z)}
   const dy=(rn?.7:1)*Math.max(.3,Math.sin(t%240000/240000*6.2832)*.5+.65);sun.intensity=.8*dy;amb.intensity=.25+.5*dy;scene.background.setRGB(.6*dy,.83*dy,.96*dy);scene.fog.color.copy(scene.background);for(const m of Object.values(objs))if(m.userData.s==='lamp'){const g=m.getObjectByName('glow');if(g)g.visible=dy<.65}
-  if((mmT+=dt)>.3){mmT=0;drawMM();if(bmOpen())drawBig();if(nz)nz.gain.setTargetAtTime(mus&&rn?.06:0,ac.currentTime,.4)}
+  if((mmT+=dt)>.3){mmT=0;drawMM();{const r=$('help').getBoundingClientRect();$('mm').style.top=r.height?Math.round(r.bottom+18)+'px':''}if(bmOpen())drawBig();if(nz)nz.gain.setTargetAtTime(mus&&rn?.06:0,ac.currentTime,.4)}
   cam.position.lerp(new THREE.Vector3(me.x+Math.sin(yaw)*9*zoom,11*zoom,me.z+Math.cos(yaw)*9*zoom),.1);cam.lookAt(me.x,0,me.z);
   ren.render(scene,cam);
 }
