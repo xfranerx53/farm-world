@@ -183,7 +183,7 @@ button,.slot,.box{touch-action:manipulation}
 </head><body>
 <div id="stats" class="box"></div>
 <div id="open" class="box" title="Dükkan & Pazar (B)">🏪 Dükkan</div>
-<div id="help" class="box">WASD / ok tuşları: yürü<br>1-9, 0: alet seç · Tıkla: kullan<br>E: aletler · Enter: sohbet · M: harita<br>Çitli alana her şey konur<br>T: taşı · R: kaldır<br>Z X C V: 👋 ❤️ 😂 👍 · Q F: kamera<br><b>sürüm 24<br><span id="wx"></span></b></div>
+<div id="help" class="box">WASD / ok tuşları: yürü<br>1-9, 0: alet seç · Tıkla: kullan<br>E: aletler · Enter: sohbet · M: harita<br>Çitli alana her şey konur<br>T: taşı · R: kaldır<br>Z X C V: 👋 ❤️ 😂 👍 · Q F: kamera<br><b>sürüm 25<br><span id="wx"></span></b></div>
 <div id="bar" class="box"></div>
 <div id="chatw" class="box"><div id="log"></div><div id="copen">💬 Sohbet <small style="opacity:.7;font-weight:400">(Enter)</small><i id="cbadge"></i></div></div>
 <div id="claim" class="box" style="top:50px;left:50%;transform:translateX(-50%);cursor:pointer" title="Parsel al (K)">🏡 Parsel al</div>
@@ -199,7 +199,7 @@ button,.slot,.box{touch-action:manipulation}
 <div id="bm" class="box"><div class="ch"><b>🗺️ Harita</b><button id="bmx" class="cx" title="Kapat (Esc)">✕</button></div>
 <canvas id="bmc" width="400" height="400"></canvas>
 <div class="bmf"><span>Gitmek istediğin yere dokun</span><button id="bmh">🏡 Parselim</button></div></div>
-<canvas id="mm" class="box" width="40" height="40" title="Haritayı aç"></canvas><div id="rl" class="box cam">⟲</div><div id="rr" class="box cam">⟳</div><div id="back" class="box">↩ Geri dön</div><div id="mus" class="box" style="top:84px;left:10px;cursor:pointer;font-size:13px">🔇 Müzik</div>
+<canvas id="mm" class="box" width="96" height="96" title="Haritayı aç"></canvas><div id="rl" class="box cam">⟲</div><div id="rr" class="box cam">⟳</div><div id="back" class="box">↩ Geri dön</div><div id="mus" class="box" style="top:84px;left:10px;cursor:pointer;font-size:13px">🔇 Müzik</div>
 
 <script type="module">
 import * as THREE from 'three';
@@ -240,7 +240,7 @@ if(!myName){myName=(prompt('Oyuncu adın?')||'Çiftçi').slice(0,14);try{localSt
 let hue=[...uid].reduce((a,c)=>(a*31+c.charCodeAt(0))%360,7)/360;
 
 // ---- Oyun verileri ----
-const N=40,PS=8,PW=N/PS;
+const N=96,PS=8,PW=N/PS,OLD=5;
 const GROW={wheat:60000,carrot:90000,tomato:120000,corn:180000,strawberry:100000,pumpkin:240000},RIPE={wheat:0xe3c94a,carrot:0xf08a24,tomato:0xd9302c,corn:0xf2d03b,strawberry:0xe8284a,pumpkin:0xf28a1a};
 const ANIM={chicken:{cost:30,t:45000,item:'egg',lv:1,r:2.2,sp:1.2},cow:{cost:100,t:80000,item:'milk',lv:4,r:3,sp:.5},sheep:{cost:60,t:60000,item:'wool',lv:3,r:2.6,sp:.8}};
 const PRICE={wheat:5,carrot:8,tomato:12,corn:18,egg:6,milk:14,apple:7,flour:14,bread:35,cheese:40,strawberry:15,pumpkin:30,wool:12,jam:55,pie:80,fish:10,trout:22,goldfish:80},SEED={wheat:2,carrot:3,tomato:4,corn:6,strawberry:5,pumpkin:9},LV={wheat:1,carrot:1,tomato:2,corn:3,strawberry:2,pumpkin:4};
@@ -299,14 +299,18 @@ ground.receiveShadow=true;scene.add(ground);
 {const w=new THREE.Mesh(new THREE.PlaneGeometry(400,400),new THREE.MeshLambertMaterial({color:0x4fb0d4}));w.rotation.x=-Math.PI/2;w.position.set(N/2,-.45,N/2);scene.add(w);
 const sd=new THREE.Mesh(new THREE.BoxGeometry(N+3,.3,N+3),new THREE.MeshLambertMaterial({color:0xe6d49a}));sd.position.set(N/2-.5,-.55,N/2-.5);scene.add(sd);
 const tg=new THREE.CylinderGeometry(.1,.14,.8,5),cg=new THREE.ConeGeometry(.8,1.8,7),tm=new THREE.MeshLambertMaterial({color:0x6b4423}),cm=new THREE.MeshLambertMaterial({color:0x2f7d3c});
-for(let i=0;i<80;i++){const a=i*2.399,r=29+(i*13)%14,g=new THREE.Group(),t=new THREE.Mesh(tg,tm),c=new THREE.Mesh(cg,cm);t.position.y=.4;c.position.y=1.5;g.add(t,c);g.scale.setScalar(.9+(i%5)*.2);g.position.set(N/2+Math.cos(a)*r,0,N/2+Math.sin(a)*r);g.traverse(o=>o.castShadow=true);scene.add(g)}}
+for(let i=0;i<170;i++){const a=i*2.399,r=N*.74+(i*13)%14,g=new THREE.Group(),t=new THREE.Mesh(tg,tm),c=new THREE.Mesh(cg,cm);t.position.y=.4;c.position.y=1.5;g.add(t,c);g.scale.setScalar(.9+(i%5)*.2);g.position.set(N/2+Math.cos(a)*r,0,N/2+Math.sin(a)*r);g.traverse(o=>o.castShadow=true);scene.add(g)}}
 const hover=new THREE.LineSegments(new THREE.EdgesGeometry(new THREE.BoxGeometry(1.02,.5,1.02)),new THREE.LineBasicMaterial({color:0xffffff}));
 hover.position.y=-.15;scene.add(hover);
 
 // ---- Parseller ----
-const parcels={},oc=new THREE.Color(),pid=(x,z)=>Math.floor(x/PS)+Math.floor(z/PS)*PW;
+const parcels={},oc=new THREE.Color(),pid=(x,z)=>{const px=Math.floor(x/PS),pz=Math.floor(z/PS);return px<OLD&&pz<OLD?px+pz*OLD:OLD*OLD+px+pz*PW},
+pcen=id=>{id=+id;let px,pz;if(id<OLD*OLD){px=id%OLD;pz=Math.floor(id/OLD)}else{id-=OLD*OLD;px=id%PW;pz=Math.floor(id/PW)}return [px*PS+PS/2,pz*PS+PS/2]};
+let spawned=false;
 function repaintAll(){for(let z=0;z<N;z++)for(let x=0;x<N;x++)paint(x+'_'+z)}
-onValue(ref(db,'parcels'),s=>{for(const k in parcels)delete parcels[k];Object.assign(parcels,s.val()||{});repaintAll()});
+onValue(ref(db,'parcels'),s=>{const v=s.val()||{};for(const k in parcels)delete parcels[k];for(const k in v)if(v[k])parcels[k]=v[k];
+  if(!spawned){spawned=true;const e=Object.entries(parcels).find(([i,p])=>p.u===uid);if(e){const [x,z]=pcen(e[0]);me.x=x;me.z=z;lastSent=''}}
+  repaintAll()});
 async function claim(){try{await claim0()}catch(e){toast('Parsel alınamadı: '+(e.code||e.message))}}
 async function claim0(){
   if(Object.values(parcels).some(p=>p.u===uid))return toast('Zaten bir parselin var');
@@ -584,7 +588,7 @@ panel.onclick=async e=>{
   if(a==='fadd'){set(ref(db,'friends/'+uid+'/'+k),(others[k]&&others[k].n)||'?');toast('Arkadaş eklendi')}
   if(a==='fdel')remove(ref(db,'friends/'+uid+'/'+k));
   if(a==='gift'){if(inv.coins<10)return toast('Yetersiz para');inv.coins-=10;push(ref(db,'inbox/'+k),{coins:10});toast('Hediye gönderildi');save()}
-  if(a==='visit'||a==='home'){const t=a==='home'?uid:k,e=Object.entries(parcels).find(([i,p])=>p.u===t);if(!e)return toast('Parseli yok');const i=+e[0];back={x:me.x,z:me.z};$('back').style.display='flex';me.x=(i%PW)*PS+PS/2;me.z=Math.floor(i/PW)*PS+PS/2;panel.style.display='none'}
+  if(a==='visit'||a==='home'){const t=a==='home'?uid:k,e=Object.entries(parcels).find(([i,p])=>p.u===t);if(!e)return toast('Parseli yok');const i=+e[0];back={x:me.x,z:me.z};$('back').style.display='flex';me.x=pcen(i)[0];me.z=pcen(i)[1];panel.style.display='none'}
   if(a==='look'){hue=$('lh').value/100;inv.look={h:hue,ht:+$('lt').value};scene.remove(meMesh);meMesh=mkPlayer(myName,hue,inv.look.ht);lastSent='';save()}
   if(a==='craft'){const R=RC[k];if(lvl()<R.lv)return toast('Seviye '+R.lv+' gerekir');if(!Object.entries(R.i).every(([x,n])=>have(x)>=n))return toast('Malzeme yetersiz');for(const x in R.i)add(x,-R.i[x]);add(k,1);gain(6);save()}
   if(a==='list'){
@@ -613,7 +617,7 @@ let nz=null;function noise(){ac=ac||new AudioContext();const b=ac.createBuffer(1
 let mus=0,mi;$('mus').onclick=()=>{mus=!mus;if(mus&&!nz){try{nz=noise()}catch(e){}}$('mus').textContent=mus?'🎵 Müzik açık':'🔇 Müzik';clearInterval(mi);
   if(mus)mi=setInterval(()=>{const sc=[[0,2,4,7,9],[0,2,4,7,9],[0,3,5,7,10],[0,3,5,7,10]][season()],n=sc[Math.random()*5|0]+(Math.random()<.3?12:0);snd(220*2**(n/12),1.4,.035)},950)};
 // ---- Mini harita ----
-const mmc=$('mm').getContext('2d');let mmT=0;
+$('mm').width=$('mm').height=N;const mmc=$('mm').getContext('2d');let mmT=0;
 function drawMM(){const g=mmc;for(let z=0;z<N;z++)for(let x=0;x<N;x++){const q=tiles[x+'_'+z],P=parcels[pid(x,z)];let c=P?`hsl(${P.c*360},45%,48%)`:'#5fae4a';
   if(q)c=q.s==='soil'?'#7a4a22':q.s==='crop'?'#3fa34d':q.s==='path'?'#9c9a92':(q.s==='fence'||q.s==='barnwall')?'#4a2e14':'#f1d27a';g.fillStyle=c;g.fillRect(x,z,1,1)}
   g.fillStyle='#fff';for(const o of Object.values(others))g.fillRect(o.m.position.x-.5,o.m.position.z-.5,1.5,1.5);g.fillStyle='#e33';g.fillRect(me.x-1,me.z-1,3,3)}
@@ -656,7 +660,7 @@ onValue(query(ref(db,'chat'),limitToLast(30)),s=>{
   const la=E[E.length-1];if(la){if(lastChat&&la[0]!==lastChat){bubble(la[1]);if(!cpOpen()&&la[1].n!==myName){unread++;badge()}}lastChat=la[0]}
 });
 // ---- Harita (mini haritaya bas → büyük harita → dokun, oraya git) ----
-const bm=$('bm'),bmc=$('bmc'),bg=bmc.getContext('2d'),BS=bmc.width/N;
+const bm=$('bm'),bmc=$('bmc');bmc.width=bmc.height=N*5;const bg=bmc.getContext('2d'),BS=5;
 const bmOpen=()=>bm.style.display==='block';
 function openMap(){panel.style.display='none';closeChat();closeTools();bm.style.display='block';drawBig()}
 function closeMap(){bm.style.display='none'}
@@ -665,12 +669,12 @@ function drawBig(){const g=bg;
   for(let z=0;z<N;z++)for(let x=0;x<N;x++){const q=tiles[x+'_'+z],P=parcels[pid(x,z)];let c=P?`hsl(${P.c*360},45%,48%)`:'#5fae4a';
     if(q)c=q.s==='soil'?'#7a4a22':q.s==='crop'?'#3fa34d':q.s==='path'?'#9c9a92':(q.s==='fence'||q.s==='barnwall')?'#4a2e14':'#f1d27a';g.fillStyle=c;g.fillRect(x*BS,z*BS,BS,BS)}
   g.strokeStyle='rgba(255,255,255,.45)';g.lineWidth=1;for(let i=1;i<PW;i++){g.beginPath();g.moveTo(i*PS*BS,0);g.lineTo(i*PS*BS,N*BS);g.moveTo(0,i*PS*BS);g.lineTo(N*BS,i*PS*BS);g.stroke()}
-  g.font='bold 12px Fredoka,sans-serif';g.textAlign='center';g.lineWidth=3;g.strokeStyle='rgba(0,0,0,.6)';g.fillStyle='#fff';
-  for(const id in parcels){const P=parcels[id],cx=(id%PW)*PS*BS+PS*BS/2,cz=Math.floor(id/PW)*PS*BS+14;g.strokeText(P.n||'?',cx,cz);g.fillText(P.n||'?',cx,cz)}
+  g.font='bold 11px Fredoka,sans-serif';g.textAlign='center';g.lineWidth=3;g.strokeStyle='rgba(0,0,0,.6)';g.fillStyle='#fff';
+  for(const id in parcels){const P=parcels[id],[px,pz]=pcen(id),cx=px*BS,cz=(pz-PS/2)*BS+12,nm=String(P.n||'?').slice(0,6);g.strokeText(nm,cx,cz);g.fillText(nm,cx,cz)}
   g.fillStyle='#fff';for(const o of Object.values(others)){g.beginPath();g.arc((o.m.position.x+.5)*BS,(o.m.position.z+.5)*BS,5,0,7);g.fill()}
   g.fillStyle='#e33';g.strokeStyle='#fff';g.lineWidth=2;g.beginPath();g.arc((me.x+.5)*BS,(me.z+.5)*BS,7,0,7);g.fill();g.stroke()}
 $('mm').onclick=openMap;$('bmx').onclick=closeMap;
-$('bmh').onclick=()=>{const e=Object.entries(parcels).find(([i,p])=>p.u===uid);if(!e)return toast('Henüz parselin yok (🏡 Parsel al)');const i=+e[0];goTo((i%PW)*PS+PS/2,Math.floor(i/PW)*PS+PS/2)};
+$('bmh').onclick=()=>{const e=Object.entries(parcels).find(([i,p])=>p.u===uid);if(!e)return toast('Henüz parselin yok (🏡 Parsel al)');const i=+e[0];goTo(pcen(i)[0],pcen(i)[1])};
 bmc.addEventListener('click',e=>{const r=bmc.getBoundingClientRect();goTo(Math.floor((e.clientX-r.left)/r.width*N),Math.floor((e.clientY-r.top)/r.height*N))});
 setTimeout(()=>toast('🗺️ Mini haritaya dokunarak istediğin yere gidebilirsin'),5000);
 
