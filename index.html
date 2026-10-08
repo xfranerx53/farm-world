@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="tr"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover">
+<meta name="theme-color" content="#3a2716"><meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-capable" content="yes">
 <title>Çiftlik Dünyası</title>
 <style>
 *{box-sizing:border-box}body{margin:0;overflow:hidden;font:14px system-ui,sans-serif;background:#9ad4f5}
@@ -64,19 +65,90 @@ body,.box,input,select,button{font-family:'Fredoka',system-ui,sans-serif}
 #panel .x{position:sticky;top:0;float:right;z-index:5;width:36px;height:36px;border-radius:50%!important;background:#e0533a!important;color:#fff!important;font-size:17px;padding:0!important;margin:0 0 0 8px!important;box-shadow:0 3px 0 #8a2a18!important}
 #back{top:122px;left:10px;cursor:pointer;font-weight:600;background:linear-gradient(#9be072,#55b03a);color:#12340a;display:none}
 #joy{background:rgba(48,32,18,.35);border:2px solid rgba(255,244,217,.4)}
+
+<style>
+/* ===== v21: mobil dikey + PC arayüz düzenlemeleri ===== */
+html,body{height:100%;overscroll-behavior:none;-webkit-tap-highlight-color:transparent}
+body{height:100dvh;-webkit-user-select:none;user-select:none}
+input{-webkit-user-select:text;user-select:text}
+button,.slot,.box{touch-action:manipulation}
+.slot.on{transform:none}
+#bar{scrollbar-width:none;-webkit-overflow-scrolling:touch}#bar::-webkit-scrollbar{display:none}
+#toast{z-index:45;pointer-events:none;max-width:90vw;text-align:center}
+#panel{z-index:30}
+#mm{cursor:pointer}
+/* sohbet kutusu (küçük önizleme) */
+#chatw{cursor:pointer;width:260px;padding:8px 10px}
+#log{max-height:none;overflow:hidden;margin-bottom:6px;pointer-events:none}
+#log div{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+#copen{display:flex;align-items:center;gap:6px;font-weight:600;font-size:14px}
+#cbadge{display:none;background:#e0533a;color:#fff;border-radius:10px;padding:0 7px;font-style:normal;font-size:12px;line-height:18px}
+/* sohbet paneli + büyük harita */
+#cp,#bm{display:none;position:fixed;z-index:35;left:50%;transform:translateX(-50%);top:calc(env(safe-area-inset-top,0px) + 8px);width:min(520px,96vw);padding:10px 12px}
+.ch{display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;font-size:17px}
+.cx{width:42px;height:42px;border-radius:50%;border:0;background:#e0533a;color:#fff;font-size:19px;box-shadow:0 3px 0 #8a2a18;cursor:pointer;flex:none;font-family:inherit}
+.cx:active{transform:translateY(2px);box-shadow:none}
+.cin{display:flex;gap:6px}
+#chat{flex:1;width:auto;min-width:0;border:0;border-radius:10px;padding:10px 12px;font-size:16px}
+#csend,.cem button,#bmh{border:0;border-radius:10px;background:linear-gradient(#ffd966,#eaa514);color:#4a2e08;font-weight:600;box-shadow:0 2px 0 #9a6a08;cursor:pointer;font-family:inherit}
+#csend{padding:0 16px;font-size:15px}
+#csend:active,.cem button:active,#bmh:active{transform:translateY(2px);box-shadow:none}
+.cem{display:flex;gap:6px;margin:8px 0}.cem button{flex:1;font-size:22px;padding:6px 0}
+#clog{max-height:min(44dvh,340px);overflow:auto;font-size:14px;line-height:1.45;-webkit-overflow-scrolling:touch}
+#clog div{padding:4px 0;border-bottom:1px dashed rgba(255,225,160,.2);word-break:break-word}
+#clog b{color:var(--gold)}
+#bmc{display:block;margin:0 auto;width:min(92vw,62dvh,480px);aspect-ratio:1;border-radius:10px;border:2px solid rgba(255,225,160,.3);background:#5fae4a;touch-action:manipulation;cursor:crosshair}
+.bmf{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-top:8px;font-size:13px;opacity:.95}
+#bmh{padding:8px 14px;font-size:14px}
+/* ===== telefon / dar ekran / dokunmatik ===== */
+@media (max-width:700px),(pointer:coarse){
+ :root{--sa:env(safe-area-inset-top,0px);--sb:env(safe-area-inset-bottom,0px)}
+ #stats{top:calc(var(--sa) + 6px);left:6px;max-width:calc(100vw - 122px);padding:6px 10px 6px 6px;gap:8px}
+ #stats .lv{width:38px;height:38px;font-size:18px}
+ #stats .st{min-width:0}#stats b{font-size:16px}
+ #stats small{display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;font-size:11px}
+ #open,#claim{left:auto!important;right:6px;transform:none!important;min-height:44px;display:flex;align-items:center;justify-content:center;font-size:15px;padding:8px 12px;width:112px}
+ #open{top:calc(var(--sa) + 6px)}
+ #claim{top:calc(var(--sa) + 56px)}
+ #open:active,#claim:active{transform:scale(.96)!important}
+ #mm{top:calc(var(--sa) + 106px);right:6px;width:88px;height:88px}
+ #mus{top:calc(var(--sa) + 88px)!important;left:6px!important;font-size:12px!important;padding:5px 10px;min-height:32px;display:flex;align-items:center}
+ #back{top:calc(var(--sa) + 126px);left:6px;min-height:44px;display:none;align-items:center;font-size:15px}
+ #help{display:none}
+ #bar{left:6px;right:6px;bottom:calc(var(--sb) + 6px);transform:none;max-width:none;justify-content:flex-start}
+ .slot{flex:none;min-width:62px;min-height:56px;padding:6px 6px;display:block}
+ #chatw{left:6px;bottom:calc(var(--sb) + 82px);width:min(calc(100vw - 150px),260px)}
+ #log{max-height:38px;font-size:12px}
+ #joy{bottom:calc(var(--sb) + 84px);right:12px}
+ .cam{bottom:calc(var(--sb) + 214px)}
+ #toast{top:26%;left:50%}
+ #panel{top:calc(var(--sa) + 8px);left:50%;transform:translateX(-50%);width:96vw;max-height:calc(100dvh - var(--sa) - var(--sb) - 16px);padding:12px;line-height:1.55}
+ #panel button{min-height:38px;padding:6px 12px!important;margin:3px 2px!important;font-size:14px}
+ #panel input,#panel select{font-size:16px;min-height:38px;padding:4px 8px}
+ #panel .x{width:44px!important;height:44px!important;min-height:44px!important}
+ #lg button{min-height:48px}
+ #lg b{font-size:34px!important;text-align:center}
+}
 </style>
 </head><body>
 <div id="stats" class="box"></div>
-<div id="open" class="box">🏪 Dükkan & Pazar (B)</div>
-<div id="help" class="box">WASD / ok tuşları: yürü<br>1-9, 0: alet seç · Tıkla: kullan<br>Enter: sohbet<br>Çitli alan → tarla · Ahır → hayvan<br>Z X C V: 👋 ❤️ 😂 👍 · Q E: kamera<br><b>sürüm 20<br><span id="wx"></span></b></div>
+<div id="open" class="box" title="Dükkan & Pazar (B)">🏪 Dükkan</div>
+<div id="help" class="box">WASD / ok tuşları: yürü<br>1-9, 0: alet seç · Tıkla: kullan<br>Enter: sohbet · M: harita<br>Çitli alan → tarla · Ahır → hayvan<br>Z X C V: 👋 ❤️ 😂 👍 · Q E: kamera<br><b>sürüm 21<br><span id="wx"></span></b></div>
 <div id="bar" class="box"></div>
-<div id="chatw" class="box"><div id="log"></div><input id="chat" placeholder="Enter ile yaz..." maxlength="120"></div>
-<div id="claim" class="box" style="top:50px;left:50%;transform:translateX(-50%);cursor:pointer">🏡 Parsel al (K)</div>
+<div id="chatw" class="box"><div id="log"></div><div id="copen">💬 Sohbet <small style="opacity:.7;font-weight:400">(Enter)</small><i id="cbadge"></i></div></div>
+<div id="claim" class="box" style="top:50px;left:50%;transform:translateX(-50%);cursor:pointer" title="Parsel al (K)">🏡 Parsel al</div>
 <div id="lg" style="position:fixed;inset:0;background:#9ad4f5;display:none;z-index:50;align-items:center;justify-content:center;flex-direction:column;gap:14px"><b style="font-size:30px">🌾 Çiftlik Dünyası</b><button id="bg" style="padding:12px 26px;font-size:16px">Google ile giriş</button><button id="bs" style="padding:8px 18px">Misafir gir (veri kaybolabilir)</button></div>
 <div id="joy"><div id="knob"></div></div>
 <div id="panel" class="box"></div>
 <div id="toast" class="box"></div>
-<canvas id="mm" class="box" width="40" height="40"></canvas><div id="rl" class="box cam">⟲</div><div id="rr" class="box cam">⟳</div><div id="back" class="box">↩ Geri dön</div><div id="mus" class="box" style="top:84px;left:10px;cursor:pointer;font-size:13px">🔇 Müzik</div>
+<div id="cp" class="box"><div class="ch"><b>💬 Sohbet</b><button id="cx" class="cx" title="Kapat (Esc)">✕</button></div>
+<div class="cin"><input id="chat" placeholder="Mesaj yaz..." maxlength="120" autocomplete="off" enterkeyhint="send"><button id="csend">Gönder</button></div>
+<div class="cem"><button data-e="👋">👋</button><button data-e="❤️">❤️</button><button data-e="😂">😂</button><button data-e="👍">👍</button></div>
+<div id="clog"></div></div>
+<div id="bm" class="box"><div class="ch"><b>🗺️ Harita</b><button id="bmx" class="cx" title="Kapat (Esc)">✕</button></div>
+<canvas id="bmc" width="400" height="400"></canvas>
+<div class="bmf"><span>Gitmek istediğin yere dokun</span><button id="bmh">🏡 Parselim</button></div></div>
+<canvas id="mm" class="box" width="40" height="40" title="Haritayı aç"></canvas><div id="rl" class="box cam">⟲</div><div id="rr" class="box cam">⟳</div><div id="back" class="box">↩ Geri dön</div><div id="mus" class="box" style="top:84px;left:10px;cursor:pointer;font-size:13px">🔇 Müzik</div>
 
 <script type="module">
 import * as THREE from 'three';
@@ -146,7 +218,7 @@ function save(){set(ref(db,'lb/'+uid),{n:myName,xp:inv.xp||0});set(ref(db,'inv/'
 function hud(){
   const L=lvl(),a=20*(L-1)**2,b=20*L*L,pc=Math.round(((inv.xp||0)-a)/(b-a)*100);
   $('stats').innerHTML=`<div class="lv">${L}</div><div class="st"><b>🪙 ${inv.coins}</b><i class="xpb"><u style="width:${pc}%"></u></i><small>${Object.entries(inv.items).map(([k,v])=>NAME[k]+' '+v).join(' · ')||'Çantan boş'}</small></div>`;
-  $('bar').innerHTML=TOOLS.map((t,i)=>`<div class="slot ${t[0]===tool?'on':''}" data-t="${t[0]}">${t[1]}<br><small>${i+1}. ${t[2]}${t[0].endsWith('_seed')?' ('+have(t[0])+')':''}</small></div>`).join('');
+  const _sl=$('bar').scrollLeft;$('bar').innerHTML=TOOLS.map((t,i)=>`<div class="slot ${t[0]===tool?'on':''}" data-t="${t[0]}">${t[1]}<br><small>${i+1}. ${t[2]}${t[0].endsWith('_seed')?' ('+have(t[0])+')':''}</small></div>`).join('');$('bar').scrollLeft=_sl;
 }
 $('bar').onclick=e=>{const s=e.target.closest('.slot');if(s){tool=s.dataset.t;hud()}};
 {const D=Math.floor(now()/86400000);if(inv.lg!==D){inv.st=inv.lg===D-1?(inv.st||0)+1:1;inv.lg=D;const b=Math.min(100,20*inv.st);inv.coins+=b;setTimeout(()=>toast('🎁 Günlük giriş: '+inv.st+'. gün · +'+b+'🪙'),1500)}}
@@ -157,12 +229,13 @@ onChildAdded(ref(db,'inbox/'+uid),s=>{const v=s.val();inv.coins+=v.coins||0;if(v
 // ---- Sahne ----
 const scene=new THREE.Scene();scene.background=new THREE.Color(0x9ad4f5);scene.fog=new THREE.Fog(0x9ad4f5,25,70);
 const cam=new THREE.PerspectiveCamera(55,innerWidth/innerHeight,.1,200);
-const ren=new THREE.WebGLRenderer({antialias:true});ren.setSize(innerWidth,innerHeight);ren.setPixelRatio(Math.min(devicePixelRatio,2));ren.shadowMap.enabled=true;ren.shadowMap.type=THREE.PCFSoftShadowMap;
+const ren=new THREE.WebGLRenderer({antialias:true});ren.setSize(innerWidth,innerHeight);ren.setPixelRatio(Math.min(devicePixelRatio,matchMedia('(pointer:coarse)').matches?1.5:2));ren.shadowMap.enabled=true;ren.shadowMap.type=THREE.PCFSoftShadowMap;
 document.body.prepend(ren.domElement);
 const amb=new THREE.AmbientLight(0xffffff,.75);scene.add(amb);
-const sun=new THREE.DirectionalLight(0xfff0d0,.8);sun.position.set(10,20,8);sun.castShadow=true;sun.shadow.mapSize.set(2048,2048);sun.shadow.bias=-.0006;
+const sun=new THREE.DirectionalLight(0xfff0d0,.8);sun.position.set(10,20,8);sun.castShadow=true;sun.shadow.mapSize.set(...(matchMedia('(pointer:coarse)').matches?[1024,1024]:[2048,2048]));sun.shadow.bias=-.0006;
 Object.assign(sun.shadow.camera,{left:-18,right:18,top:18,bottom:-18,near:1,far:60});scene.add(sun,sun.target);scene.add(new THREE.HemisphereLight(0xcfe8ff,0x6b8f3a,.28));
-addEventListener('resize',()=>{cam.aspect=innerWidth/innerHeight;cam.updateProjectionMatrix();ren.setSize(innerWidth,innerHeight)});
+function fit(){const a=innerWidth/innerHeight;cam.aspect=a;cam.fov=a<1?Math.min(85,55*(1+(1-a)*.9)):55;cam.updateProjectionMatrix();ren.setSize(innerWidth,innerHeight)}
+fit();addEventListener('resize',fit);addEventListener('orientationchange',()=>setTimeout(fit,200));
 
 const gg=new THREE.BoxGeometry(.98,.4,.98);gg.translate(0,-.2,0);
 const ground=new THREE.InstancedMesh(gg,new THREE.MeshLambertMaterial(),N*N);
@@ -269,10 +342,11 @@ set(myRef,{x:me.x,z:me.z,n:myName,c:hue,ht:(inv.look&&inv.look.ht)||0});
 // ---- Girdi ----
 const keys={};
 addEventListener('keydown',e=>{
-  if(e.target.tagName==='INPUT'){if(e.key==='Escape')e.target.blur();return}
-  if(e.key==='Escape'){panel.style.display='none';return}
-  if(e.key==='Enter'){$('chat').focus();e.preventDefault();return}
+  if(e.target.tagName==='INPUT'){if(e.key==='Escape'){if(e.target.id==='chat')closeChat();else e.target.blur()}return}
+  if(e.key==='Escape'){panel.style.display='none';closeChat();closeMap();return}
+  if(e.key==='Enter'){openChat();e.preventDefault();return}
   if(e.key==='b'||e.key==='B'){togglePanel();return}
+  if(e.key==='m'||e.key==='M'){openMap();return}
   if(e.key==='k'||e.key==='K'){claim();return}
   const EM={z:'👋',x:'❤️',c:'😂',v:'👍'}[e.key.toLowerCase()];if(EM&&!e.repeat){push(ref(db,'chat'),{n:myName,m:EM});return}
   const i=e.key==='0'?10:+e.key;if(i>=1&&i<=TOOLS.length){tool=TOOLS[i-1][0];hud();return}
@@ -286,7 +360,20 @@ function pick(e){
   return {x:h.instanceId%N,z:Math.floor(h.instanceId/N)};
 }
 ren.domElement.addEventListener('pointermove',e=>{const p=pick(e);if(p){hover.position.set(p.x,-.15,p.z);const zz=(parcels[pid(p.x,p.z)]||{}).u===uid?zoneAt(p.x,p.z):null;hover.material.color.setHex(zz==='field'?0x7cff7c:zz==='barn'?0xffa060:0xffffff)}});
-ren.domElement.addEventListener('pointerdown',e=>{if(panel.style.display==='block'){panel.style.display='none';return}const p=pick(e);if(p)act(p.x,p.z)});
+const cptr=new Set();let tp=null;
+const hoverAt=p=>{hover.position.set(p.x,-.15,p.z)};
+ren.domElement.addEventListener('pointerdown',e=>{
+  if(cpOpen()||bmOpen()){closeChat();closeMap();return}
+  if(panel.style.display==='block'){panel.style.display='none';return}
+  if(e.pointerType==='mouse'){const p=pick(e);if(p)act(p.x,p.z);return}
+  cptr.add(e.pointerId);if(cptr.size>1){tp=null;return}
+  tp={id:e.pointerId,x:e.clientX,y:e.clientY,t:performance.now()};
+});
+ren.domElement.addEventListener('pointerup',e=>{cptr.delete(e.pointerId);
+  if(e.pointerType==='mouse'||!tp||tp.id!==e.pointerId)return;
+  const ok=Math.hypot(e.clientX-tp.x,e.clientY-tp.y)<14&&performance.now()-tp.t<600;tp=null;
+  if(ok){const p=pick(e);if(p){hoverAt(p);act(p.x,p.z)}}});
+ren.domElement.addEventListener('pointercancel',e=>{cptr.delete(e.pointerId);tp=null});
 
 function act(x,z){
   if(tool==='rod')return fish();
@@ -347,7 +434,7 @@ function act(x,z){
 }
 
 // ---- Dükkan & Pazar ----
-function togglePanel(){panel.style.display=panel.style.display==='block'?'none':'block';renderPanel()}
+function togglePanel(){closeChat();closeMap();panel.style.display=panel.style.display==='block'?'none':'block';renderPanel()}
 $('open').onclick=togglePanel;
 onValue(ref(db,'market'),s=>{market=s.val()||{};if(document.activeElement.tagName!=='INPUT')renderPanel()});
 function renderPanel(){
@@ -394,7 +481,7 @@ panel.onclick=async e=>{
   if(a==='fadd'){set(ref(db,'friends/'+uid+'/'+k),(others[k]&&others[k].n)||'?');toast('Arkadaş eklendi')}
   if(a==='fdel')remove(ref(db,'friends/'+uid+'/'+k));
   if(a==='gift'){if(inv.coins<10)return toast('Yetersiz para');inv.coins-=10;push(ref(db,'inbox/'+k),{coins:10});toast('Hediye gönderildi');save()}
-  if(a==='visit'||a==='home'){const t=a==='home'?uid:k,e=Object.entries(parcels).find(([i,p])=>p.u===t);if(!e)return toast('Parseli yok');const i=+e[0];back={x:me.x,z:me.z};$('back').style.display='block';me.x=(i%PW)*PS+PS/2;me.z=Math.floor(i/PW)*PS+PS/2;panel.style.display='none'}
+  if(a==='visit'||a==='home'){const t=a==='home'?uid:k,e=Object.entries(parcels).find(([i,p])=>p.u===t);if(!e)return toast('Parseli yok');const i=+e[0];back={x:me.x,z:me.z};$('back').style.display='flex';me.x=(i%PW)*PS+PS/2;me.z=Math.floor(i/PW)*PS+PS/2;panel.style.display='none'}
   if(a==='look'){hue=$('lh').value/100;inv.look={h:hue,ht:+$('lt').value};scene.remove(meMesh);meMesh=mkPlayer(myName,hue,inv.look.ht);lastSent='';save()}
   if(a==='craft'){const R=RC[k];if(lvl()<R.lv)return toast('Seviye '+R.lv+' gerekir');if(!Object.entries(R.i).every(([x,n])=>have(x)>=n))return toast('Malzeme yetersiz');for(const x in R.i)add(x,-R.i[x]);add(k,1);gain(6);save()}
   if(a==='list'){
@@ -434,15 +521,41 @@ function bubble(m){const T=m.n===myName?meMesh:(Object.values(others).find(o=>o.
   g.font='600 34px Fredoka,sans-serif';g.fillStyle='#3a2716';g.textAlign='center';g.fillText(String(m.m).slice(0,28),256,53);
   const sp=new THREE.Sprite(new THREE.SpriteMaterial({map:new THREE.CanvasTexture(c),depthTest:false}));sp.scale.set(4,.75,1);sp.position.y=2.4;sp.name='bub';
   const old=T.getObjectByName('bub');if(old)T.remove(old);T.add(sp);setTimeout(()=>T.remove(sp),5000)}
-// ---- Sohbet ----
-onValue(query(ref(db,'chat'),limitToLast(6)),s=>{
-  const log=$('log');log.textContent='';
-  Object.values(s.val()||{}).forEach(m=>{const d=document.createElement('div');d.textContent=m.n+': '+m.m;log.appendChild(d)});
-  const E=Object.entries(s.val()||{}),la=E[E.length-1];if(la){if(lastChat&&la[0]!==lastChat)bubble(la[1]);lastChat=la[0]}
+// ---- Sohbet (üstte açılan panel, ✕ ile kapanır) ----
+const cp=$('cp'),cin=$('chat');let unread=0;
+const cpOpen=()=>cp.style.display==='block';
+function openChat(){panel.style.display='none';closeMap();for(const k in keys)keys[k]=false;cp.style.display='block';unread=0;badge();setTimeout(()=>cin.focus(),30)}
+function closeChat(){if(!cpOpen())return;cp.style.display='none';cin.blur()}
+function badge(){const b=$('cbadge');b.style.display=unread?'inline-block':'none';b.textContent=unread}
+function sendChat(m){m=String(m).trim();if(m)push(ref(db,'chat'),{n:myName,m:m.slice(0,120)})}
+$('chatw').onclick=openChat;$('cx').onclick=closeChat;
+$('csend').onclick=()=>{sendChat(cin.value);cin.value='';cin.focus()};
+cp.querySelector('.cem').onclick=e=>{const b=e.target.closest('button');if(b)sendChat(b.dataset.e)};
+cin.addEventListener('keydown',e=>{if(e.key==='Enter'){sendChat(cin.value);cin.value='';e.preventDefault()}});
+onValue(query(ref(db,'chat'),limitToLast(30)),s=>{
+  const E=Object.entries(s.val()||{}),log=$('log'),cl=$('clog');log.textContent='';cl.textContent='';
+  E.slice(-3).forEach(([,m])=>{const d=document.createElement('div');d.textContent=m.n+': '+m.m;log.appendChild(d)});
+  E.slice().reverse().forEach(([,m])=>{const d=document.createElement('div'),b=document.createElement('b');b.textContent=m.n+': ';d.appendChild(b);d.appendChild(document.createTextNode(m.m));cl.appendChild(d)});
+  const la=E[E.length-1];if(la){if(lastChat&&la[0]!==lastChat){bubble(la[1]);if(!cpOpen()&&la[1].n!==myName){unread++;badge()}}lastChat=la[0]}
 });
-$('chat').addEventListener('keydown',e=>{
-  if(e.key==='Enter'){const v=e.target.value.trim();if(v)push(ref(db,'chat'),{n:myName,m:v.slice(0,120)});e.target.value='';e.target.blur()}
-});
+// ---- Harita (mini haritaya bas → büyük harita → dokun, oraya git) ----
+const bm=$('bm'),bmc=$('bmc'),bg=bmc.getContext('2d'),BS=bmc.width/N;
+const bmOpen=()=>bm.style.display==='block';
+function openMap(){panel.style.display='none';closeChat();bm.style.display='block';drawBig()}
+function closeMap(){bm.style.display='none'}
+function goTo(x,z){back={x:me.x,z:me.z};$('back').style.display='flex';me.x=Math.max(0,Math.min(N-1,x));me.z=Math.max(0,Math.min(N-1,z));lastSent='';closeMap();toast('📍 Gidildi · ↩ ile geri dönebilirsin')}
+function drawBig(){const g=bg;
+  for(let z=0;z<N;z++)for(let x=0;x<N;x++){const q=tiles[x+'_'+z],P=parcels[pid(x,z)];let c=P?`hsl(${P.c*360},45%,48%)`:'#5fae4a';
+    if(q)c=q.s==='soil'?'#7a4a22':q.s==='crop'?'#3fa34d':q.s==='path'?'#9c9a92':(q.s==='fence'||q.s==='barnwall')?'#4a2e14':'#f1d27a';g.fillStyle=c;g.fillRect(x*BS,z*BS,BS,BS)}
+  g.strokeStyle='rgba(255,255,255,.45)';g.lineWidth=1;for(let i=1;i<PW;i++){g.beginPath();g.moveTo(i*PS*BS,0);g.lineTo(i*PS*BS,N*BS);g.moveTo(0,i*PS*BS);g.lineTo(N*BS,i*PS*BS);g.stroke()}
+  g.font='bold 12px Fredoka,sans-serif';g.textAlign='center';g.lineWidth=3;g.strokeStyle='rgba(0,0,0,.6)';g.fillStyle='#fff';
+  for(const id in parcels){const P=parcels[id],cx=(id%PW)*PS*BS+PS*BS/2,cz=Math.floor(id/PW)*PS*BS+14;g.strokeText(P.n||'?',cx,cz);g.fillText(P.n||'?',cx,cz)}
+  g.fillStyle='#fff';for(const o of Object.values(others)){g.beginPath();g.arc((o.m.position.x+.5)*BS,(o.m.position.z+.5)*BS,5,0,7);g.fill()}
+  g.fillStyle='#e33';g.strokeStyle='#fff';g.lineWidth=2;g.beginPath();g.arc((me.x+.5)*BS,(me.z+.5)*BS,7,0,7);g.fill();g.stroke()}
+$('mm').onclick=openMap;$('bmx').onclick=closeMap;
+$('bmh').onclick=()=>{const e=Object.entries(parcels).find(([i,p])=>p.u===uid);if(!e)return toast('Henüz parselin yok (🏡 Parsel al)');const i=+e[0];goTo((i%PW)*PS+PS/2,Math.floor(i/PW)*PS+PS/2)};
+bmc.addEventListener('click',e=>{const r=bmc.getBoundingClientRect();goTo(Math.floor((e.clientX-r.left)/r.width*N),Math.floor((e.clientY-r.top)/r.height*N))});
+setTimeout(()=>toast('🗺️ Mini haritaya dokunarak istediğin yere gidebilirsin'),5000);
 
 let zoom=1,pd=0,yaw=0;
 for(const [id,k] of [['rl','q'],['rr','e']]){const el=$(id);el.addEventListener('pointerdown',()=>keys[k]=true);for(const ev of['pointerup','pointerleave','pointercancel'])el.addEventListener(ev,()=>keys[k]=false)}
@@ -537,7 +650,7 @@ function loop(){
   const rn=rainAt(t);const sn=season()===3;rain.visible=rn||sn;rain.material.color.setHex(sn&&!rn?0xffffff:0xaaccff);rain.material.size=sn&&!rn?.2:.12;$('wx').textContent=SEAS[season()]+' · '+(rn?'🌧️ Yağmur':sn?'Karlı':'Açık')+' · 👥 '+(Object.keys(others).length+1)+' çevrimiçi';
   if(rn||sn){for(let i=1;i<900;i+=3){rp[i]-=(sn&&!rn?3:14)*dt;if(rp[i]<0)rp[i]=14}rain.geometry.attributes.position.needsUpdate=true;rain.position.set(me.x,0,me.z)}
   const dy=(rn?.7:1)*Math.max(.3,Math.sin(t%240000/240000*6.2832)*.5+.65);sun.intensity=.8*dy;amb.intensity=.25+.5*dy;scene.background.setRGB(.6*dy,.83*dy,.96*dy);scene.fog.color.copy(scene.background);for(const m of Object.values(objs))if(m.userData.s==='lamp'){const g=m.getObjectByName('glow');if(g)g.visible=dy<.65}
-  if((mmT+=dt)>.3){mmT=0;drawMM();if(nz)nz.gain.setTargetAtTime(mus&&rn?.06:0,ac.currentTime,.4)}
+  if((mmT+=dt)>.3){mmT=0;drawMM();if(bmOpen())drawBig();if(nz)nz.gain.setTargetAtTime(mus&&rn?.06:0,ac.currentTime,.4)}
   cam.position.lerp(new THREE.Vector3(me.x+Math.sin(yaw)*9*zoom,11*zoom,me.z+Math.cos(yaw)*9*zoom),.1);cam.lookAt(me.x,0,me.z);
   ren.render(scene,cam);
 }
